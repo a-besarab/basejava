@@ -26,16 +26,18 @@ public class ArrayStorage {
     }
 
     void update(Resume resume) {
-        if (getResumePosition(resume.getUuid()) >= 0) {
-            storage[getResumePosition(resume.getUuid())] = resume;
+        int currentResumePosition = getResumePosition(resume.getUuid());
+        if (currentResumePosition >= 0) {
+            storage[currentResumePosition] = resume;
         } else {
             System.out.println("Resume " + resume.getUuid() + " not exist.");
         }
     }
 
     Resume get(String uuid) {
-        if (getResumePosition(uuid) >= 0) {
-            return storage[getResumePosition(uuid)];
+        int currentResumePosition = getResumePosition(uuid);
+        if (currentResumePosition >= 0) {
+            return storage[currentResumePosition];
         } else {
             System.out.println("Resume " + uuid + " not exist.");
             return null;
@@ -43,8 +45,9 @@ public class ArrayStorage {
     }
 
     void delete(String uuid) {
-        if (getResumePosition(uuid) >= 0) {
-            storage[getResumePosition(uuid)] = storage[counter - 1];
+        int currentResumePosition = getResumePosition(uuid);
+        if (currentResumePosition >= 0) {
+            storage[currentResumePosition] = storage[counter - 1];
             storage[counter - 1] = null;
             counter--;
         } else {
@@ -64,12 +67,11 @@ public class ArrayStorage {
     }
 
     private int getResumePosition(String uuid) {
-        int result = -1;
         for (int i = 0; i < counter; i++) {
             if (storage[i].getUuid().equals(uuid)) {
-                result = i;
+                return i;
             }
         }
-        return result;
+        return -1;
     }
 }
