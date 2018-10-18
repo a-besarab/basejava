@@ -14,9 +14,10 @@ public abstract class AbstractArrayStorage implements Storage {
     protected int counter = 0;
 
     public void save(Resume resume) {
-        if (getPosition(resume.getUuid()) < 0) {
+        int index = getPosition(resume.getUuid());
+        if (index < 0) {
             if (counter < STORAGE_LIMIT) {
-                insertNewElement(resume);
+                insertNewElement(resume, index);
                 counter++;
             } else {
                 System.out.println("Base is full. Resume " + resume.getUuid() + " not saved.");
@@ -71,7 +72,7 @@ public abstract class AbstractArrayStorage implements Storage {
 
     protected abstract int getPosition(String uuid);
 
-    protected abstract void insertNewElement(Resume resume);
+    protected abstract void insertNewElement(Resume resume, int index);
 
     protected abstract void deleteOldElement(int index);
 }
