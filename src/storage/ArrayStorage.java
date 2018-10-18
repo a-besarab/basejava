@@ -7,7 +7,7 @@ import model.Resume;
  */
 public class ArrayStorage extends AbstractArrayStorage {
 
-
+    @Override
     protected int getPosition(String uuid) {
         for (int i = 0; i < counter; i++) {
             if (uuid.equals(storage[i].getUuid())) {
@@ -20,7 +20,6 @@ public class ArrayStorage extends AbstractArrayStorage {
     @Override
     protected void insertNewElement(Resume resume) {
         storage[counter] = resume;
-
     }
 
     @Override
