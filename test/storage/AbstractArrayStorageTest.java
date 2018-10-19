@@ -23,10 +23,18 @@ public abstract class AbstractArrayStorageTest {
 
     @Test
     public void save() {
+        storage.clear();
+        storage.save(new Resume(UUID_1));
+        Assert.assertEquals(1, storage.size());
     }
 
     @Test
     public void delete() {
+        storage.clear();
+        storage.save(new Resume(UUID_1));
+        storage.save(new Resume(UUID_2));
+        storage.delete(UUID_1);
+        Assert.assertEquals(1, storage.size());
     }
 
     @Test
@@ -36,6 +44,8 @@ public abstract class AbstractArrayStorageTest {
 
     @Test
     public void clear() {
+        storage.clear();
+        Assert.assertEquals(0, storage.size());
     }
 
     @Test
