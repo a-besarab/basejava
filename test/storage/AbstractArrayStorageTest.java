@@ -1,6 +1,7 @@
 package storage;
 
 import exception.NotExistStorageException;
+import exception.StorageException;
 import model.Resume;
 import org.junit.Assert;
 import org.junit.Before;
@@ -30,6 +31,7 @@ public abstract class AbstractArrayStorageTest {
     public void save() {
         storage.clear();
         storage.save(new Resume(UUID_1));
+        Assert.assertEquals(new Resume(UUID_1), storage.get(UUID_1));
         Assert.assertEquals(1, storage.size());
     }
 
@@ -52,6 +54,9 @@ public abstract class AbstractArrayStorageTest {
 
     @Test
     public void update() {
+        Resume resume = new Resume(UUID_1);
+        storage.update(resume);
+        Assert.assertTrue(resume == storage.get(UUID_1));
     }
 
     @Test
@@ -67,5 +72,20 @@ public abstract class AbstractArrayStorageTest {
     @Test(expected = NotExistStorageException.class)
     public void getNotExist() {
         storage.get("dummy");
+    }
+
+    @Test(expected = StorageException.class)
+    public void overflow() {
+        storage.clear();
+
+        for (int i = 0; i < AbstractArrayStorage.STORAGE_LIMIT; i++) {
+            storage.save(new Resume());
+        }
+
+        if (storage.size() != AbstractArrayStorage.STORAGE_LIMIT) {
+            throw new IndexOutOfBoundsException();
+        }
+
+        storage.save(new Resume());
     }
 }
