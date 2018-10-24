@@ -24,7 +24,7 @@ public abstract class AbstractArrayStorageTest {
     protected AbstractArrayStorageTest(Storage storage) {
         this.storage = storage;
     }
-    
+
     @Before
     public void setUp() {
         storage.clear();
@@ -53,7 +53,7 @@ public abstract class AbstractArrayStorageTest {
                 storage.save(new Resume());
             }
         } catch (StorageException e) {
-            Assert.fail();
+            Assert.fail("Filling storage is incorrect.");
         }
         storage.save(new Resume());
     }
@@ -70,12 +70,10 @@ public abstract class AbstractArrayStorageTest {
 
     @Test
     public void getAll() {
-        Resume arrayResume[] = new Resume[3];
-        arrayResume[0] = resume1;
-        arrayResume[1] = resume1;
-        arrayResume[2] = resume2;
-        Assert.assertEquals(3, storage.getAll().length);
-        Assert.assertArrayEquals(arrayResume, storage.getAll());
+        Resume arrayResumeReceived[] = storage.getAll();
+        Resume arrayResumeOriginal[] = new Resume[]{resume1, resume2, resume3};
+        Assert.assertEquals(arrayResumeOriginal.length, arrayResumeReceived.length);
+        Assert.assertArrayEquals(arrayResumeOriginal, arrayResumeReceived);
     }
 
     @Test
