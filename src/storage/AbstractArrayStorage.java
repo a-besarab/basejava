@@ -1,7 +1,5 @@
 package storage;
 
-import exception.ExistStorageException;
-import exception.NotExistStorageException;
 import exception.StorageException;
 import model.Resume;
 
@@ -16,29 +14,23 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     protected Resume[] storage = new Resume[STORAGE_LIMIT];
     protected int counter = 0;
 
-    public void save(Resume resume) {
+    public void doSave(Resume resume) {
         int index = getPosition(resume.getUuid());
-        if (index < 0) {
-            if (counter < STORAGE_LIMIT) {
-                insertNewElement(resume, index);
-                counter++;
-            } else {
-                throw new StorageException("Storage overflow", resume.getUuid());
-            }
+
+        if (counter < STORAGE_LIMIT) {
+            insertNewElement(resume, index);
+            counter++;
         } else {
-            throw new ExistStorageException(resume.getUuid());
+            throw new StorageException("Storage overflow", resume.getUuid());
         }
+
     }
 
-    public void delete(String uuid) {
+    public void doDelete(String uuid) {
         int index = getPosition(uuid);
-        if (index >= 0) {
             deleteOldElement(index);
             storage[counter - 1] = null;
             counter--;
-        } else {
-            throw new NotExistStorageException(uuid);
-        }
     }
 
     public int size() {
@@ -50,26 +42,18 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         counter = 0;
     }
 
-    public void update(Resume resume) {
+    public void doUpdate(Resume resume) {
         int index = getPosition(resume.getUuid());
-        if (index >= 0) {
-            storage[index] = resume;
-        } else {
-            throw new NotExistStorageException(resume.getUuid());
-        }
+        storage[index] = resume;
     }
 
     public Resume[] getAll() {
         return Arrays.copyOfRange(storage, 0, counter);
     }
 
-    public Resume get(String uuid) {
+    public Resume doGet(String uuid) {
         int index = getPosition(uuid);
-        if (index >= 0) {
-            return storage[index];
-        } else {
-            throw new NotExistStorageException(uuid);
-        }
+        return storage[index];
     }
 
     protected abstract int getPosition(String uuid);

@@ -23,4 +23,18 @@ public class SortedArrayStorage extends AbstractArrayStorage {
     protected void deleteOldElement(int index) {
         System.arraycopy(storage, index + 1, storage, index, counter - index - 1);
     }
+
+    @Override
+    protected boolean isExist(Resume resume) {//TODO
+        if (getPosition(resume.getUuid()) < 0) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    @Override
+    protected boolean isNotExist(Resume resume) {
+        return false;//TODO
+    }
 }

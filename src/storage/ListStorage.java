@@ -7,7 +7,7 @@ import model.Resume;
 import java.util.ArrayList;
 
 public class ListStorage extends AbstractStorage {
-    ArrayList<Resume> list = new ArrayList<>();
+    private ArrayList<Resume> list = new ArrayList<>();
 
     @Override
     public void clear() {
@@ -15,26 +15,40 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    public void save(Resume resume) {
+    protected boolean isExist(Resume resume) {
         if (list.contains(resume)) {
-            throw new ExistStorageException(resume.getUuid());
+            return true;
         } else {
-            list.add(resume);
+            throw new NotExistStorageException(resume.getUuid());
         }
     }
 
     @Override
-    public void update(Resume resume) {
+    protected boolean isNotExist(Resume resume) {
+        if (!list.contains(resume)) {
+            return true;
+        } else {
+            throw new ExistStorageException(resume.getUuid());
+        }
+    }
+
+    @Override
+    public void doSave(Resume resume) {
+        list.add(resume);
+    }
+
+    @Override
+    public void doUpdate(Resume resume) {
         list.set(getIndex(resume.getUuid()), resume);
     }
 
     @Override
-    public Resume get(String uuid) {
+    public Resume doGet(String uuid) {
         return list.get(getIndex(uuid));
     }
 
     @Override
-    public void delete(String uuid) {
+    public void doDelete(String uuid) {
         list.remove(getIndex(uuid));
     }
 

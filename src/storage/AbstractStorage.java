@@ -1,20 +1,45 @@
 package storage;
 
+import exception.NotExistStorageException;
 import model.Resume;
 
 public abstract class AbstractStorage implements Storage {
 
-    public abstract void clear();
+    protected abstract boolean isExist(Resume resume);
 
-    public abstract void save(Resume resume);
+    protected abstract boolean isNotExist(Resume resume);
 
-    public abstract void update(Resume resume);
+    protected abstract void doSave(Resume resume);
 
-    public abstract Resume get(String uuid);
+    protected abstract void doUpdate(Resume resume);
 
-    public abstract void delete(String uuid);
+    protected abstract Resume doGet(String uuid);
 
-    public abstract Resume[] getAll();
+    protected abstract void doDelete(String uuid);
 
-    public abstract int size();
+    public void save(Resume resume) {
+        if (isNotExist(resume)) {
+            doSave(resume);
+        }
+    }
+
+    public void update(Resume resume) {
+        if (isExist(resume)) {
+            doUpdate(resume);
+        }
+    }
+
+    public Resume get(String uuid) {
+        if (isExist(doGet(uuid))) {
+            return doGet(uuid);
+        } else {
+            throw new NotExistStorageException(uuid);
+        }
+    }
+
+    public void delete(String uuid) {
+        if (isExist(get(uuid))) {
+            doDelete(uuid);
+        }
+    }
 }
