@@ -1,7 +1,5 @@
 package storage;
 
-import exception.ExistStorageException;
-import exception.NotExistStorageException;
 import model.Resume;
 
 import java.util.ArrayList;
@@ -15,21 +13,8 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    protected boolean isExist(Resume resume) {
-        if (list.contains(resume)) {
-            return true;
-        } else {
-            throw new NotExistStorageException(resume.getUuid());
-        }
-    }
-
-    @Override
     protected boolean isNotExist(Resume resume) {
-        if (!list.contains(resume)) {
-            return true;
-        } else {
-            throw new ExistStorageException(resume.getUuid());
-        }
+        return !list.contains(resume);
     }
 
     @Override
@@ -39,17 +24,17 @@ public class ListStorage extends AbstractStorage {
 
     @Override
     public void doUpdate(Resume resume) {
-        list.set((int)getIndex(resume.getUuid()), resume);
+        list.set((int) getIndex(resume.getUuid()), resume);
     }
 
     @Override
     public Resume doGet(String uuid) {
-        return list.get((int)getIndex(uuid));
+        return list.get((int) getIndex(uuid));
     }
 
     @Override
     public void doDelete(String uuid) {
-        list.remove(getIndex(uuid));
+        list.remove((int) getIndex(uuid));
     }
 
     @Override
@@ -69,10 +54,6 @@ public class ListStorage extends AbstractStorage {
                 index = i;
             }
         }
-        if (index >= 0) {
-            return index;
-        } else {
-            throw new NotExistStorageException(uuid);
-        }
+        return index;
     }
 }

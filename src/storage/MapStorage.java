@@ -1,7 +1,5 @@
 package storage;
 
-import exception.ExistStorageException;
-import exception.NotExistStorageException;
 import model.Resume;
 
 import java.util.HashMap;
@@ -15,21 +13,8 @@ public class MapStorage extends AbstractStorage {
     }
 
     @Override
-    protected boolean isExist(Resume resume) {
-        if (map.containsValue(resume)) {
-            return true;
-        } else {
-            throw new NotExistStorageException(resume.getUuid());
-        }
-    }
-
-    @Override
     protected boolean isNotExist(Resume resume) {
-        if (!map.containsValue(resume)) {
-            return true;
-        } else {
-            throw new ExistStorageException(resume.getUuid());
-        }
+        return !map.containsValue(resume);
     }
 
     @Override
@@ -53,8 +38,17 @@ public class MapStorage extends AbstractStorage {
     }
 
     @Override
+    protected Object getIndex(String uuid) {
+        int index = -1;
+        if (map.containsKey(uuid)) {
+            index = 0;                                              //TODO or not TODO?
+        }
+        return index;
+    }
+
+    @Override
     public Resume[] getAll() {
-        return new Resume[map.size()];                       //TODO via iterators...
+        return map.values().toArray(new Resume[map.size()]);
     }
 
     @Override

@@ -1,7 +1,5 @@
 package storage;
 
-import exception.ExistStorageException;
-import exception.NotExistStorageException;
 import exception.StorageException;
 import model.Resume;
 
@@ -17,7 +15,7 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     protected int counter = 0;
 
     public void doSave(Resume resume) {
-        int index = (int)getIndex(resume.getUuid());
+        int index = (int) getIndex(resume.getUuid());
 
         if (counter < STORAGE_LIMIT) {
             insertNewElement(resume, index);
@@ -25,14 +23,13 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         } else {
             throw new StorageException("Storage overflow", resume.getUuid());
         }
-
     }
 
     public void doDelete(String uuid) {
-        int index = (int)getIndex(uuid);
-            deleteOldElement(index);
-            storage[counter - 1] = null;
-            counter--;
+        int index = (int) getIndex(uuid);
+        deleteOldElement(index);
+        storage[counter - 1] = null;
+        counter--;
     }
 
     public int size() {
@@ -45,7 +42,7 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     public void doUpdate(Resume resume) {
-        int index = (int)getIndex(resume.getUuid());
+        int index = (int) getIndex(resume.getUuid());
         storage[index] = resume;
     }
 
@@ -54,25 +51,13 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     public Resume doGet(String uuid) {
-        int index = (int)getIndex(uuid);
+        int index = (int) getIndex(uuid);
         return storage[index];
-    }
-    @Override
-    protected boolean isExist(Resume resume) {
-        if ((int)getIndex(resume.getUuid()) >= 0) {//TODO
-            return true;
-        } else {
-            throw new NotExistStorageException(resume.getUuid());
-        }
     }
 
     @Override
-    protected boolean isNotExist(Resume resume) {//TODO
-        if ((int)getIndex(resume.getUuid()) < 0) {
-            return true;
-        } else {
-            throw new ExistStorageException(resume.getUuid());
-        }
+    protected boolean isNotExist(Resume resume) {
+        return (int) getIndex(resume.getUuid()) < 0;
     }
 
     protected abstract Object getIndex(String uuid);
