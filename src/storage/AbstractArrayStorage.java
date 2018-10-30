@@ -56,8 +56,8 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    protected boolean isNotExist(Resume resume) {
-        return (int) getIndex(resume.getUuid()) < 0;
+    protected boolean isExist(String uuid) {
+        return (int) getIndex(uuid) >= 0;
     }
 
     protected abstract Object getIndex(String uuid);

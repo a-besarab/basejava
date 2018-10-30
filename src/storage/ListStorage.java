@@ -13,8 +13,8 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    protected boolean isNotExist(Resume resume) {
-        return !list.contains(resume);
+    protected boolean isExist(String uuid) {
+        return list.contains(uuid);
     }
 
     @Override

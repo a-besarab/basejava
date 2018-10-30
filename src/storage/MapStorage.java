@@ -13,8 +13,8 @@ public class MapStorage extends AbstractStorage {
     }
 
     @Override
-    protected boolean isNotExist(Resume resume) {
-        return !map.containsValue(resume);
+    protected boolean isExist(String uuid) {
+        return map.containsKey(uuid);
     }
 
     @Override
