@@ -17,6 +17,8 @@ public abstract class AbstractStorage implements Storage {
 
     protected abstract void doDelete(String uuid);
 
+    protected abstract Object getIndex(String uuid);
+
     public void save(Resume resume) {
         if (isNotExist(resume)) {
             doSave(resume);

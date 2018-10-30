@@ -39,12 +39,12 @@ public class ListStorage extends AbstractStorage {
 
     @Override
     public void doUpdate(Resume resume) {
-        list.set(getIndex(resume.getUuid()), resume);
+        list.set((int)getIndex(resume.getUuid()), resume);
     }
 
     @Override
     public Resume doGet(String uuid) {
-        return list.get(getIndex(uuid));
+        return list.get((int)getIndex(uuid));
     }
 
     @Override
@@ -62,7 +62,7 @@ public class ListStorage extends AbstractStorage {
         return list.size();
     }
 
-    private int getIndex(String uuid) {
+    protected Object getIndex(String uuid) {
         int index = -1;
         for (int i = 0; i < list.size(); i++) {
             if (list.get(i).getUuid().equals(uuid)) {

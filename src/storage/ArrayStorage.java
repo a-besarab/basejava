@@ -10,7 +10,7 @@ import model.Resume;
 public class ArrayStorage extends AbstractArrayStorage {
 
     @Override
-    protected int getPosition(String uuid) {
+    protected Object getIndex(String uuid) {
         for (int i = 0; i < counter; i++) {
             if (uuid.equals(storage[i].getUuid())) {
                 return i;
@@ -29,21 +29,21 @@ public class ArrayStorage extends AbstractArrayStorage {
         storage[index] = storage[counter - 1];
     }
 
-    @Override
-    protected boolean isExist(Resume resume) {
-        if (getPosition(resume.getUuid()) >= 0) {//TODO
-            return true;
-        } else {
-            throw new NotExistStorageException(resume.getUuid());
-        }
-    }
-
-    @Override
-    protected boolean isNotExist(Resume resume) {//TODO
-        if (getPosition(resume.getUuid()) < 0) {
-            return true;
-        } else {
-            throw new ExistStorageException(resume.getUuid());
-        }
-    }
+//    @Override
+//    protected boolean isExist(Resume resume) {
+//        if ((int)getIndex(resume.getUuid()) >= 0) {//TODO
+//            return true;
+//        } else {
+//            throw new NotExistStorageException(resume.getUuid());
+//        }
+//    }
+//
+//    @Override
+//    protected boolean isNotExist(Resume resume) {//TODO
+//        if ((int)getIndex(resume.getUuid()) < 0) {
+//            return true;
+//        } else {
+//            throw new ExistStorageException(resume.getUuid());
+//        }
+//    }
 }

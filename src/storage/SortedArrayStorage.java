@@ -7,7 +7,7 @@ import java.util.Arrays;
 public class SortedArrayStorage extends AbstractArrayStorage {
 
     @Override
-    protected int getPosition(String uuid) {
+    protected Object getIndex(String uuid) {
         Resume searchKey = new Resume(uuid);
         return Arrays.binarySearch(storage, 0, counter, searchKey);
     }
@@ -26,7 +26,7 @@ public class SortedArrayStorage extends AbstractArrayStorage {
 
     @Override
     protected boolean isExist(Resume resume) {//TODO
-        if (getPosition(resume.getUuid()) < 0) {
+        if ((int)getIndex(resume.getUuid()) < 0) {
             return false;
         } else {
             return true;
