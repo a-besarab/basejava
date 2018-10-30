@@ -6,9 +6,9 @@ import model.Resume;
 
 public abstract class AbstractStorage implements Storage {
 
-    protected abstract boolean isExist(String uuid);
+    protected abstract boolean isExist(Object index);
 
-    protected abstract void doSave(Resume resume);
+    protected abstract void doSave(Resume resume, Object index);
 
     protected abstract void doUpdate(Resume resume);
 
@@ -20,8 +20,7 @@ public abstract class AbstractStorage implements Storage {
 
 
     public void save(Resume resume) {
-        checkExist(resume.getUuid());
-        doSave(resume);
+        doSave(resume, checkExist(resume.getUuid()));
     }
 
     public void update(Resume resume) {
@@ -45,9 +44,10 @@ public abstract class AbstractStorage implements Storage {
         }
     }
 
-    private String checkExist(String uuid) {
-        if (!isExist(uuid)) {
-            return uuid;
+    private Object checkExist(String uuid) {
+        Object index = getIndex(uuid);
+        if (!isExist(index)) {
+            return index;
         } else {
             throw new ExistStorageException(uuid);
         }

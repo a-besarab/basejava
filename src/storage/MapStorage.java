@@ -13,12 +13,12 @@ public class MapStorage extends AbstractStorage {
     }
 
     @Override
-    protected boolean isExist(String uuid) {
+    protected boolean isExist(Object uuid) {
         return map.containsKey(uuid);
     }
 
     @Override
-    public void doSave(Resume resume) {
+    public void doSave(Resume resume, Object index) {
         map.put(resume.getUuid(), resume);
     }
 

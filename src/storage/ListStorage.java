@@ -13,12 +13,12 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    protected boolean isExist(String uuid) {
-        return list.contains(uuid);
+    protected boolean isExist(Object index) {
+        return (Integer) index >= 0;
     }
 
     @Override
-    public void doSave(Resume resume) {
+    public void doSave(Resume resume, Object index) {
         list.add(resume);
     }
 
