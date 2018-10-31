@@ -24,7 +24,6 @@ public abstract class AbstractStorage implements Storage {
     }
 
     public void update(Resume resume) {
-        checkNotExist(resume.getUuid());
         doUpdate(resume, checkNotExist(resume.getUuid()));
     }
 

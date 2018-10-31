@@ -3,9 +3,10 @@ package storage;
 import model.Resume;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class MapStorage extends AbstractStorage {
-    HashMap<String, Resume> map = new HashMap<>();
+    private Map<String, Resume> map = new HashMap<>();
 
     @Override
     public void clear() {
@@ -14,12 +15,12 @@ public class MapStorage extends AbstractStorage {
 
     @Override
     protected boolean isExist(Object index) {
-        return map.containsKey(index);
+        return index != null;
     }
 
     @Override
     public void doSave(Resume resume, Object index) {
-        map.put((String) index, resume);
+        map.put(index.toString(), resume);
     }
 
     @Override
@@ -29,21 +30,22 @@ public class MapStorage extends AbstractStorage {
 
     @Override
     public Resume doGet(Object index) {
-        return map.get(index);
+        return map.get(index.toString());
     }
 
     @Override
     public void doDelete(Object index) {
-        map.remove(index);
+        map.remove(index.toString());
     }
 
     @Override
-    protected Object getIndex(String uuid) {
-        int index = -1;
-        if (map.containsKey(uuid)) {
-            index = 0;                                              //TODO or not TODO?
+    protected String getIndex(String uuid) {
+        for (String key : map.keySet()) {
+            if (key.equals(uuid)) {
+                return null;
+            }
         }
-        return index;
+        return uuid;
     }
 
     @Override

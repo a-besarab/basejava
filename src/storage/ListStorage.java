@@ -3,9 +3,10 @@ package storage;
 import model.Resume;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ListStorage extends AbstractStorage {
-    private ArrayList<Resume> list = new ArrayList<>();
+    private List<Resume> list = new ArrayList<>();
 
     @Override
     public void clear() {
@@ -14,7 +15,7 @@ public class ListStorage extends AbstractStorage {
 
     @Override
     protected boolean isExist(Object index) {
-        return (Integer) index >= 0;
+        return (Integer) index < 0;
     }
 
     @Override
@@ -34,7 +35,7 @@ public class ListStorage extends AbstractStorage {
 
     @Override
     public void doDelete(Object index) {
-        list.remove(index);
+        list.remove(((Integer) index).intValue());
     }
 
     @Override
@@ -47,13 +48,13 @@ public class ListStorage extends AbstractStorage {
         return list.size();
     }
 
-    protected Object getIndex(String uuid) {
-        int index = -1;
+    @Override
+    protected Integer getIndex(String uuid) {
         for (int i = 0; i < list.size(); i++) {
             if (list.get(i).getUuid().equals(uuid)) {
-                index = i;
+                return i;
             }
         }
-        return index;
+        return -1;
     }
 }
