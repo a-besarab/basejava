@@ -13,6 +13,8 @@ public class ListStorage extends AbstractStorage {
         list.clear();
     }
 
+
+
     @Override
     protected boolean isExist(Object index) {
         return (Integer) index >= 0;
@@ -39,9 +41,14 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    public Resume[] getAll() {
-        return list.toArray(new Resume[list.size()]);
+    public List<Resume> getAllSorted() {
+        return list;
     }
+
+//    @Override
+//    public Resume[] getAll() {
+//        return list.toArray(new Resume[list.size()]);
+//    }
 
     @Override
     public int size() {
