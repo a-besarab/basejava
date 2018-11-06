@@ -40,11 +40,6 @@ public class MapStorage extends AbstractStorage {
 
     @Override
     protected String getIndex(String uuid) {
-//        for (String key : map.keySet()) {
-//            if (key.equals(uuid)) {
-//                return uuid;
-//            }
-//        }
         return uuid;
     }
 

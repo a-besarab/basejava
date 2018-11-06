@@ -62,7 +62,7 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         return (Integer) index >= 0;
     }
 
-    protected abstract Object getIndex(String uuid);
+    protected abstract Integer getIndex(String uuid);
 
     protected abstract void insertNewElement(Resume resume, int index);
 
