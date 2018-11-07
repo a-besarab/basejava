@@ -49,14 +49,9 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         storage[(Integer) index] = resume;
     }
 
-    //
-//    @Override
-//    public Resume[] getAll() {
-//        return Arrays.copyOfRange(storage, 0, counter);
-//    }
     @Override
-    public List<Resume> getAllSorted() {
-        return new ArrayList<>(Arrays.asList(storage));
+    public List<Resume> doCopyAll() {
+        return Arrays.asList(Arrays.copyOfRange(storage, 0, counter));
     }
 
     @Override

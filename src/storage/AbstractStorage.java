@@ -4,6 +4,9 @@ import exception.ExistStorageException;
 import exception.NotExistStorageException;
 import model.Resume;
 
+import java.util.Collections;
+import java.util.List;
+
 public abstract class AbstractStorage implements Storage {
 
     protected abstract boolean isExist(Object index);
@@ -17,6 +20,8 @@ public abstract class AbstractStorage implements Storage {
     protected abstract void doDelete(Object index);
 
     protected abstract Object getIndex(String index);
+
+    protected abstract List<Resume> doCopyAll();
 
 
     public void save(Resume resume) {
@@ -51,5 +56,11 @@ public abstract class AbstractStorage implements Storage {
         } else {
             return index;
         }
+    }
+    @Override
+    public List<Resume> getAllSorted() {
+        List<Resume> list = doCopyAll();
+       // Collections.sort(list);
+        return list;
     }
 }
