@@ -23,7 +23,6 @@ public abstract class AbstractStorage implements Storage {
 
     protected abstract List<Resume> doCopyAll();
 
-
     public void save(Resume resume) {
         doSave(resume, checkNotExist(resume.getUuid()));
     }
@@ -57,10 +56,11 @@ public abstract class AbstractStorage implements Storage {
             return index;
         }
     }
+
     @Override
     public List<Resume> getAllSorted() {
         List<Resume> list = doCopyAll();
-       // Collections.sort(list);
+        Collections.sort(list);
         return list;
     }
 }

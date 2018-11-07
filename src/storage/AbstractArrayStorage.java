@@ -3,7 +3,6 @@ package storage;
 import exception.StorageException;
 import model.Resume;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 

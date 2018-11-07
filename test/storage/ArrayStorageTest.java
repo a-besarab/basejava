@@ -1,7 +1,7 @@
 package storage;
 
 
-public class ArrayStorageTest extends AbstractStorageTest {
+public class ArrayStorageTest extends OverFlowTest {
 
     public ArrayStorageTest() {
         super(new ArrayStorage());
