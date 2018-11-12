@@ -1,6 +1,6 @@
 package storage;
 
-public class MapStorageResumeKeyTest extends AbstractStorageTest{
+public class MapStorageResumeKeyTest extends AbstractStorageTest {
     public MapStorageResumeKeyTest() {
         super(new MapStorageResumeKey());
     }

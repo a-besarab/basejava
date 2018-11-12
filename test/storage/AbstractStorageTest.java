@@ -51,7 +51,6 @@ public abstract class AbstractStorageTest {
         storage.save(resume3);
     }
 
-
     @Test
     public void get() {
         Assert.assertEquals(resume1, storage.get(resume1.getUuid()));

@@ -9,8 +9,7 @@ public class Resume implements Comparable<Resume> {
 
     // Unique identifier
     private final String uuid;
-    private String fullName;
-
+    private final String fullName;
 
     public Resume(String fullName) {
         this(UUID.randomUUID().toString(), fullName);
@@ -29,9 +28,7 @@ public class Resume implements Comparable<Resume> {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         Resume resume = (Resume) o;
-
         return uuid.equals(resume.uuid);
     }
 
