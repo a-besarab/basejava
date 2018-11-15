@@ -1,11 +1,21 @@
 package model;
 
 public class Contacts {
-    private final String text;
 
 
-    public Contacts(String text) {
-        this.text = text;
-    } //TODO
+//
+//    private Map<ContactType, String> contactMap;
+//
+//    public Contacts(Map<ContactType, String> contactMap) {
+//        this.contactMap = contactMap;
+//    }
+//
+//    public void setContactMap(Map<ContactType, String> contactMap) {
+//        this.contactMap = contactMap;
+//    }
+//
+//    public Map<ContactType, String> getContactMap() {
+//        return contactMap;
+//    }
 
 }

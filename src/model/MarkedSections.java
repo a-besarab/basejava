@@ -1,7 +1,5 @@
 package model;
 
-import storage.ListStorage;
-
 import java.util.List;
 
 public class MarkedSections extends Sections {

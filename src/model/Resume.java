@@ -1,5 +1,7 @@
 package model;
 
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.UUID;
 
 /**
@@ -10,6 +12,25 @@ public class Resume implements Comparable<Resume> {
     // Unique identifier
     private final String uuid;
     private final String fullName;
+
+    private Map<ContactType, String> contacts = new TreeMap<>();
+    private Map<SectionType, Sections> sections = new TreeMap<>();
+
+    public void setContacts(Map<ContactType, String> contacts) {
+        this.contacts = contacts;
+    }
+
+    public void setSections(Map<SectionType, Sections> sections) {
+        this.sections = sections;
+    }
+
+    public Map<ContactType, String> getContacts() {
+        return contacts;
+    }
+
+    public Map<SectionType, Sections> getSections() {
+        return sections;
+    }
 
     public Resume(String fullName) {
         this(UUID.randomUUID().toString(), fullName);
@@ -23,6 +44,7 @@ public class Resume implements Comparable<Resume> {
     public String getUuid() {
         return uuid;
     }
+
     public String getFullName() {
         return fullName;
     }
