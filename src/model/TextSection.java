@@ -1,9 +1,9 @@
 package model;
 
-public class TextSections extends Sections {
+public class TextSection extends Section {
     private final String text;
 
-    public TextSections(String text) {
+    public TextSection(String text) {
         this.text = text;
     }
 
@@ -16,7 +16,7 @@ public class TextSections extends Sections {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        TextSections that = (TextSections) o;
+        TextSection that = (TextSection) o;
 
         return text != null ? text.equals(that.text) : that.text == null;
     }

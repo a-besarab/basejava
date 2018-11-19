@@ -1,7 +1,7 @@
 package model;
 
+import java.util.EnumMap;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.UUID;
 
 /**
@@ -13,23 +13,23 @@ public class Resume implements Comparable<Resume> {
     private final String uuid;
     private final String fullName;
 
-    private Map<ContactType, String> contacts = new TreeMap<>();
-    private Map<SectionType, Sections> sections = new TreeMap<>();
+    private Map<ContactType, String> contact = new EnumMap<>(ContactType.class);
+    private Map<SectionType, Section> section = new EnumMap<>(SectionType.class);
 
-    public void setContacts(Map<ContactType, String> contacts) {
-        this.contacts = contacts;
+    public void setContact(Map<ContactType, String> contact) {
+        this.contact = contact;
     }
 
-    public void setSections(Map<SectionType, Sections> sections) {
-        this.sections = sections;
+    public void setSection(Map<SectionType, Section> section) {
+        this.section = section;
     }
 
-    public Map<ContactType, String> getContacts() {
-        return contacts;
+    public Map<ContactType, String> getContact() {
+        return contact;
     }
 
-    public Map<SectionType, Sections> getSections() {
-        return sections;
+    public Map<SectionType, Section> getSection() {
+        return section;
     }
 
     public Resume(String fullName) {
