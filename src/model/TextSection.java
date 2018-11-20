@@ -1,9 +1,12 @@
 package model;
 
+import java.util.Objects;
+
 public class TextSection extends AbstractSection {
     private final String text;
 
     public TextSection(String text) {
+        Objects.requireNonNull(text, "Text must not be null");
         this.text = text;
     }
 
@@ -18,12 +21,12 @@ public class TextSection extends AbstractSection {
 
         TextSection that = (TextSection) o;
 
-        return text != null ? text.equals(that.text) : that.text == null;
+        return text.equals(that.text);
     }
 
     @Override
     public int hashCode() {
-        return text != null ? text.hashCode() : 0;
+        return text.hashCode();
     }
 
     @Override

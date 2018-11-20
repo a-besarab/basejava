@@ -1,22 +1,18 @@
 package model;
 
-public class OrganizationSection extends AbstractSection {
-    private final String name;
-    private final String periodStart;
-    private final String periodEnd;
-    private final String position;
-    private final String description;
+import java.util.List;
+import java.util.Objects;
 
-    public OrganizationSection(String name, String periodStart, String periodEnd, String position, String description) {
-        this.name = name;
-        this.periodStart = periodStart;
-        this.periodEnd = periodEnd;
-        this.position = position;
-        this.description = description;
+public class OrganizationSection extends AbstractSection {
+    private final List<Organization> organization;
+
+    public OrganizationSection(List<Organization> organization) {
+        Objects.requireNonNull(organization, "organizations must not be null");
+        this.organization = organization;
     }
 
-    public String getOrganization() {
-        return getOrganization();
+    public List<Organization> getOrganization() {
+        return organization;
     }
 
     @Override
@@ -26,25 +22,16 @@ public class OrganizationSection extends AbstractSection {
 
         OrganizationSection that = (OrganizationSection) o;
 
-        if (!name.equals(that.name)) return false;
-        if (!periodStart.equals(that.periodStart)) return false;
-        if (!periodEnd.equals(that.periodEnd)) return false;
-        if (!position.equals(that.position)) return false;
-        return description.equals(that.description);
+        return organization.equals(that.organization);
     }
 
     @Override
     public int hashCode() {
-        int result = name.hashCode();
-        result = 31 * result + periodStart.hashCode();
-        result = 31 * result + periodEnd.hashCode();
-        result = 31 * result + position.hashCode();
-        result = 31 * result + description.hashCode();
-        return result;
+        return organization.hashCode();
     }
 
     @Override
     public String toString() {
-        return name + periodStart + periodEnd + position + description;
+        return organization.toString();
     }
 }

@@ -2,6 +2,7 @@ package model;
 
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -24,12 +25,12 @@ public class Resume implements Comparable<Resume> {
         this.section = section;
     }
 
-    public Map<ContactType, String> getContact() {
-        return contact;
+    public String getContact(ContactType type) {
+        return contact.get(type);
     }
 
-    public Map<SectionType, AbstractSection> getSection() {
-        return section;
+    public AbstractSection getSection(SectionType type) {
+        return section.get(type);
     }
 
     public Resume(String fullName) {
@@ -37,6 +38,8 @@ public class Resume implements Comparable<Resume> {
     }
 
     public Resume(String uuid, String fullName) {
+        Objects.requireNonNull(uuid, "uuid mast not be null");
+        Objects.requireNonNull(fullName, "fullName mast not be null");
         this.uuid = uuid;
         this.fullName = fullName;
     }
@@ -56,16 +59,16 @@ public class Resume implements Comparable<Resume> {
 
         Resume resume = (Resume) o;
 
-        if (uuid != null ? !uuid.equals(resume.uuid) : resume.uuid != null) return false;
-        if (fullName != null ? !fullName.equals(resume.fullName) : resume.fullName != null) return false;
+        if (!uuid.equals(resume.uuid)) return false;
+        if (!fullName.equals(resume.fullName)) return false;
         if (contact != null ? !contact.equals(resume.contact) : resume.contact != null) return false;
         return section != null ? section.equals(resume.section) : resume.section == null;
     }
 
     @Override
     public int hashCode() {
-        int result = uuid != null ? uuid.hashCode() : 0;
-        result = 31 * result + (fullName != null ? fullName.hashCode() : 0);
+        int result = uuid.hashCode();
+        result = 31 * result + fullName.hashCode();
         result = 31 * result + (contact != null ? contact.hashCode() : 0);
         result = 31 * result + (section != null ? section.hashCode() : 0);
         return result;

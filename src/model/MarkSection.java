@@ -1,11 +1,13 @@
 package model;
 
 import java.util.List;
+import java.util.Objects;
 
 public class MarkSection extends AbstractSection {
     private final List<String> markList;
 
     public MarkSection(List<String> markList) {
+        Objects.requireNonNull(markList,"markList must not be null");
         this.markList = markList;
     }
 
@@ -20,12 +22,12 @@ public class MarkSection extends AbstractSection {
 
         MarkSection that = (MarkSection) o;
 
-        return markList != null ? markList.equals(that.markList) : that.markList == null;
+        return markList.equals(that.markList);
     }
 
     @Override
     public int hashCode() {
-        return markList != null ? markList.hashCode() : 0;
+        return markList.hashCode();
     }
 
     @Override

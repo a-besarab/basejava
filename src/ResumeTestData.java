@@ -1,6 +1,11 @@
 import model.*;
+import util.DateUtil;
 
-import java.util.*;
+import java.time.Month;
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
 
 public class ResumeTestData {
     public static void main(String[] args) {
@@ -24,18 +29,26 @@ public class ResumeTestData {
         list.add("S2");
         list.add("S3");
 
+        List<Organization> orgList = new ArrayList<>();
+        orgList.add(new Organization("OOO ogogo", null, DateUtil.of(1980, Month.JANUARY), DateUtil.of(1987, Month.AUGUST), "sys", "descr"));
+        orgList.add(new Organization("ZAO", "url", DateUtil.of(1988, Month.JANUARY), DateUtil.of(1989, Month.AUGUST), "sysfdghdf", "descrdfgh"));
+
+
         section.put(SectionType.OBJECTIVE, new TextSection("Тестовая секция для позиции"));
         section.put(SectionType.PERSONAL, new TextSection("Тестовая секция для Личных качеств"));
         section.put(SectionType.ACHIEVEMENT, new MarkSection(list));
         section.put(SectionType.QUALIFICATIONS, new MarkSection(list));
-        section.put(SectionType.EXPERIENCE, new OrganizationSection("Name", "10.01.19", "10.02.20", "sys", "descr"));
-        section.put(SectionType.EDUCATION, new OrganizationSection("Name2", "10.01.17", "10.02.28", "sy56s", "de56scr"));
-
+        section.put(SectionType.EXPERIENCE, new OrganizationSection(orgList));
+        section.put(SectionType.EDUCATION, new OrganizationSection(orgList));
         testResume.setContact(contact);
         testResume.setSection(section);
 
         System.out.println(testResume.getFullName());
-        System.out.println(testResume.getContact());
-        System.out.println(testResume.getSection());
+        for (ContactType type : ContactType.values()) {
+            System.out.println(testResume.getContact(type));
+        }
+        for (SectionType type : SectionType.values()) {
+            System.out.println(testResume.getSection(type));
+        }
     }
 }
