@@ -2,7 +2,7 @@ package model;
 
 import java.util.List;
 
-public class MarkSection extends Section {
+public class MarkSection extends AbstractSection {
     private final List<String> markList;
 
     public MarkSection(List<String> markList) {

@@ -17,7 +17,7 @@ public class ResumeTestData {
         contact.put(ContactType.STACKOVERFLOW, "StOver");
         contact.put(ContactType.HOMEPAGE, "Home");
 
-        Map<SectionType, Section> section = new EnumMap<>(SectionType.class);
+        Map<SectionType, AbstractSection> section = new EnumMap<>(SectionType.class);
 
         List<String> list = new ArrayList<>();
         list.add("S1");

@@ -1,6 +1,6 @@
 package model;
 
-public class OrganizationSection extends Section {
+public class OrganizationSection extends AbstractSection {
     private final String name;
     private final String periodStart;
     private final String periodEnd;
@@ -45,12 +45,6 @@ public class OrganizationSection extends Section {
 
     @Override
     public String toString() {
-        return "OrganizationSection{" +
-                "name='" + name + '\'' +
-                ", periodStart='" + periodStart + '\'' +
-                ", periodEnd='" + periodEnd + '\'' +
-                ", position='" + position + '\'' +
-                ", description='" + description + '\'' +
-                '}';
+        return name + periodStart + periodEnd + position + description;
     }
 }
