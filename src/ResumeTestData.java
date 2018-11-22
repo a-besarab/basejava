@@ -24,22 +24,24 @@ public class ResumeTestData {
 
         Map<SectionType, AbstractSection> section = new EnumMap<>(SectionType.class);
 
-        List<String> list = new ArrayList<>();
-        list.add("S1");
-        list.add("S2");
-        list.add("S3");
+        List<String> markedList = new ArrayList<>();
+        markedList.add("S1");
+        markedList.add("S2");
+        markedList.add("S3");
 
-        List<Organization> orgList = new ArrayList<>();
-        orgList.add(new Organization("OOO ogogo", null, DateUtil.of(1980, Month.JANUARY), DateUtil.of(1987, Month.AUGUST), "sys", "descr"));
-        orgList.add(new Organization("ZAO", "url", DateUtil.of(1988, Month.JANUARY), DateUtil.of(1989, Month.AUGUST), "sysfdghdf", "descrdfgh"));
-
+        List<Organization> organizationList = new ArrayList<>();
+        Organization.Content cont_1 = new Organization.Content(DateUtil.of(1988, Month.JANUARY), DateUtil.of(1989, Month.AUGUST), "sysfdghdf", "descrdfgh");
+        Organization.Content cont_2 = new Organization.Content(DateUtil.of(1986, Month.JANUARY), DateUtil.of(1989, Month.AUGUST), "sysfdghdf", "descrdfgh");
+        organizationList.add(new Organization("ZAO", "url", cont_1, cont_2));
+        organizationList.add(new Organization("PAO", "url1111", cont_2));
 
         section.put(SectionType.OBJECTIVE, new TextSection("Тестовая секция для позиции"));
         section.put(SectionType.PERSONAL, new TextSection("Тестовая секция для Личных качеств"));
-        section.put(SectionType.ACHIEVEMENT, new MarkSection(list));
-        section.put(SectionType.QUALIFICATIONS, new MarkSection(list));
-        section.put(SectionType.EXPERIENCE, new OrganizationSection(orgList));
-        section.put(SectionType.EDUCATION, new OrganizationSection(orgList));
+        section.put(SectionType.ACHIEVEMENT, new MarkSection(markedList));
+        section.put(SectionType.QUALIFICATIONS, new MarkSection(markedList));
+        section.put(SectionType.EXPERIENCE, new OrganizationSection(organizationList));
+        section.put(SectionType.EDUCATION, new OrganizationSection(organizationList));
+
         testResume.setContact(contact);
         testResume.setSection(section);
 
