@@ -19,10 +19,27 @@ public class MainFile {
             System.out.println(name);
         }
 
-        try (FileInputStream fis = new FileInputStream(filePuth)){
+        try (FileInputStream fis = new FileInputStream(filePuth)) {
             System.out.println(fis.read());
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+
+        String path = ".\\";
+        printFiles(path);
+    }
+
+    private static void printFiles(String path) {
+        File cat = new File(path);
+        File[] list = cat.listFiles();
+
+        assert list != null;
+        for (File file : list) {
+            if (file.isDirectory()) {
+                printFiles(file.getAbsolutePath());
+            } else {
+                System.out.println(file.getName());
+            }
         }
     }
 }
