@@ -25,8 +25,7 @@ public class MainFile {
             throw new RuntimeException(e);
         }
 
-        String path = ".\\";
-        printFiles(path);
+        printFiles(".\\");
     }
 
     private static void printFiles(String path) {
