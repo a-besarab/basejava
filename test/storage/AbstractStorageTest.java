@@ -29,37 +29,37 @@ public abstract class AbstractStorageTest {
     private static final Resume resume4 = new Resume(UUID_4, NAME_4);
 
     static {
-        Map<ContactType, String> contact = new EnumMap<>(ContactType.class);
-        Map<SectionType, AbstractSection> section = new EnumMap<>(SectionType.class);
-        List<String> markedList = new ArrayList<>();
-        List<Organization> organizationList = new ArrayList<>();
-
-        contact.put(ContactType.TEL, "89998887766");
-        contact.put(ContactType.SKYPE, "SkYpe.skype");
-        contact.put(ContactType.EMAIL, "mail@yandex.ru");
-        contact.put(ContactType.LINKEDIN, "linkId");
-        contact.put(ContactType.GITHUB, "GitHub");
-        contact.put(ContactType.STACKOVERFLOW, "StOver");
-        contact.put(ContactType.HOMEPAGE, "HomePage");
-
-        markedList.add("Content marked list 1");
-        markedList.add("Content marked list 2");
-
-        Organization.Content cont_1 = new Organization.Content(DateUtil.of(1999, Month.JANUARY), DateUtil.of(2008, Month.AUGUST), "Test position", "Description");
-        Organization.Content cont_2 = new Organization.Content(DateUtil.of(2008, Month.SEPTEMBER), DateUtil.of(2018, Month.DECEMBER), "Test 2 position", "Description 2");
-
-        organizationList.add(new Organization("OOO 1", "url_1", cont_1, cont_2));
-        organizationList.add(new Organization("OOO 2", "url_2", cont_2));
-
-        section.put(SectionType.OBJECTIVE, new TextSection("Test section for Objective"));
-        section.put(SectionType.PERSONAL, new TextSection("Test section for Personal"));
-        section.put(SectionType.ACHIEVEMENT, new MarkSection(markedList));
-        section.put(SectionType.QUALIFICATIONS, new MarkSection(markedList));
-        section.put(SectionType.EXPERIENCE, new OrganizationSection(organizationList));
-        section.put(SectionType.EDUCATION, new OrganizationSection(organizationList));
-
-        resume1.setContact(contact);
-        resume1.setSection(section);
+//        Map<ContactType, String> contact = new EnumMap<>(ContactType.class);
+//        Map<SectionType, AbstractSection> section = new EnumMap<>(SectionType.class);
+//        List<String> markedList = new ArrayList<>();
+//        List<Organization> organizationList = new ArrayList<>();
+//
+//        contact.put(ContactType.TEL, "89998887766");
+//        contact.put(ContactType.SKYPE, "SkYpe.skype");
+//        contact.put(ContactType.EMAIL, "mail@yandex.ru");
+//        contact.put(ContactType.LINKEDIN, "linkId");
+//        contact.put(ContactType.GITHUB, "GitHub");
+//        contact.put(ContactType.STACKOVERFLOW, "StOver");
+//        contact.put(ContactType.HOMEPAGE, "HomePage");
+//
+//        markedList.add("Content marked list 1");
+//        markedList.add("Content marked list 2");
+//
+//        Organization.Content cont_1 = new Organization.Content(DateUtil.of(1999, Month.JANUARY), DateUtil.of(2008, Month.AUGUST), "Test position", "Description");
+//        Organization.Content cont_2 = new Organization.Content(DateUtil.of(2008, Month.SEPTEMBER), DateUtil.of(2018, Month.DECEMBER), "Test 2 position", "Description 2");
+//
+//        organizationList.add(new Organization("OOO 1", "url_1", cont_1, cont_2));
+//        organizationList.add(new Organization("OOO 2", "url_2", cont_2));
+//
+//        section.put(SectionType.OBJECTIVE, new TextSection("Test section for Objective"));
+//        section.put(SectionType.PERSONAL, new TextSection("Test section for Personal"));
+//        section.put(SectionType.ACHIEVEMENT, new MarkSection(markedList));
+//        section.put(SectionType.QUALIFICATIONS, new MarkSection(markedList));
+//        section.put(SectionType.EXPERIENCE, new OrganizationSection(organizationList));
+//        section.put(SectionType.EDUCATION, new OrganizationSection(organizationList));
+//
+//        resume1.setContact(contact);
+//        resume1.setSection(section);
     }
 
     protected AbstractStorageTest(Storage storage) {

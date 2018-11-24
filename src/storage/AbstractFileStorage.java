@@ -70,7 +70,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     }
 
     @Override
-    protected File getIndex(String index) {
+    protected File getSearchKey(String index) {
         return new File(directory, index);
     }
 

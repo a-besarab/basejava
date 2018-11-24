@@ -5,9 +5,9 @@ import model.Resume;
 import org.junit.Assert;
 import org.junit.Test;
 
-public abstract class OverFlowTest extends AbstractStorageTest {
+public abstract class AbstractArrayStorageTest extends AbstractStorageTest {
 
-    protected OverFlowTest(Storage storage) {
+    protected AbstractArrayStorageTest(Storage storage) {
         super(storage);
     }
 
