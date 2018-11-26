@@ -1,3 +1,5 @@
+package storage;
+
 import model.*;
 import util.DateUtil;
 
@@ -9,7 +11,10 @@ import java.util.Map;
 
 public class ResumeTestData {
     public static void main(String[] args) {
+        fillResume();
+    }
 
+    protected static void fillResume() {
         Resume testResume = new Resume("Ivanov Ivan");
 
         Map<ContactType, String> contact = new EnumMap<>(ContactType.class);
