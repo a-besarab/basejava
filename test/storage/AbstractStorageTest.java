@@ -2,11 +2,12 @@ package storage;
 
 import exception.ExistStorageException;
 import exception.NotExistStorageException;
-import model.Resume;
+import model.*;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.time.Month;
 import java.util.Arrays;
 import java.util.List;
 
@@ -25,10 +26,31 @@ public abstract class AbstractStorageTest {
     private static final Resume resume3 = new Resume(UUID_3, NAME_3);
     private static final String UUID_4 = "uuid4";
     private static final String NAME_4 = "name4";
-    private static final Resume resume4 = new Resume(UUID_4, NAME_4);
+    private static final Resume resume4;
 
     static {
-      ResumeTestData.fillResume();
+        resume4 = new Resume(UUID_4, NAME_4);
+        resume4.setContact(ContactType.EMAIL, "mail@mail.com");
+        resume4.setContact(ContactType.TEL, "1232455");
+        resume4.setContact(ContactType.GITHUB, "git");
+        resume4.setContact(ContactType.HOMEPAGE, "homePage");
+        resume4.setSection(SectionType.OBJECTIVE, new TextSection("Objective"));
+        resume4.setSection(SectionType.PERSONAL, new TextSection("Personal"));
+        resume4.setSection(SectionType.ACHIEVEMENT, new MarkSection("Ach1", "Ach2", "Ach3"));
+        resume4.setSection(SectionType.QUALIFICATIONS, new MarkSection("Qual1", "Qual2", "Qual3"));
+        resume4.setSection(SectionType.EXPERIENCE, new OrganizationSection(
+                new Organization("OOO", "url1",
+                        new Organization.Content(1999, Month.AUGUST, 2002, Month.AUGUST, "position1", "Description1"),
+                        new Organization.Content(2002, Month.SEPTEMBER, 2015, Month.OCTOBER, "position2", "Description2")),
+                new Organization("ZAO", "url2",
+                        new Organization.Content(2015, Month.OCTOBER, 2018, Month.DECEMBER, "position3", "Description3"))));
+        resume4.setSection(SectionType.EDUCATION, new OrganizationSection(
+                new Organization("University", "url",
+                        new Organization.Content(1994, Month.SEPTEMBER, 1999, Month.JUNE, "position", "Description")),
+                new Organization("ZAO", "url2",
+                        new Organization.Content(1984, Month.SEPTEMBER, 1994, Month.JUNE, "position", "Description"))));
+
+
     }
 
     protected AbstractStorageTest(Storage storage) {

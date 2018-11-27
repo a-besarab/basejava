@@ -1,5 +1,6 @@
 package model;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -7,8 +8,12 @@ public class MarkSection extends AbstractSection {
     private final List<String> markList;
 
     public MarkSection(List<String> markList) {
-        Objects.requireNonNull(markList,"markList must not be null");
+        Objects.requireNonNull(markList, "markList must not be null");
         this.markList = markList;
+    }
+
+    public MarkSection(String... markList) {
+        this(Arrays.asList(markList));
     }
 
     public List<String> getMarkList() {

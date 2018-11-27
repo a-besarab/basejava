@@ -1,54 +1,37 @@
 package storage;
 
 import model.*;
-import util.DateUtil;
 
 import java.time.Month;
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
 
 public class ResumeTestData {
     public static void main(String[] args) {
-        fillResume();
-    }
 
-    protected static void fillResume() {
         Resume testResume = new Resume("Ivanov Ivan");
 
-        Map<ContactType, String> contact = new EnumMap<>(ContactType.class);
+        testResume.setContact(ContactType.TEL, "123456789");
+        testResume.setContact(ContactType.SKYPE, "SkYpe");
+        testResume.setContact(ContactType.EMAIL, "@mail");
+        testResume.setContact(ContactType.LINKEDIN, "linkId");
+        testResume.setContact(ContactType.GITHUB, "gita");
+        testResume.setContact(ContactType.STACKOVERFLOW, "StOver");
+        testResume.setContact(ContactType.HOMEPAGE, "Home");
+        testResume.setSection(SectionType.OBJECTIVE, new TextSection("Objective"));
+        testResume.setSection(SectionType.PERSONAL, new TextSection("Personal"));
+        testResume.setSection(SectionType.ACHIEVEMENT, new MarkSection("Ach1", "Ach2", "Ach3"));
+        testResume.setSection(SectionType.QUALIFICATIONS, new MarkSection("Qual1", "Qual2", "Qual3"));
+        testResume.setSection(SectionType.EXPERIENCE, new OrganizationSection(
+                new Organization("OOO", "url1",
+                        new Organization.Content(1999, Month.AUGUST, 2002, Month.AUGUST, "position1", "Description1"),
+                        new Organization.Content(2002, Month.SEPTEMBER, 2015, Month.OCTOBER, "position2", "Description2")),
+                new Organization("ZAO", "url2",
+                        new Organization.Content(2015, Month.OCTOBER, 2018, Month.DECEMBER, "position3", "Description3"))));
+        testResume.setSection(SectionType.EDUCATION, new OrganizationSection(
+                new Organization("University", "url",
+                        new Organization.Content(1994, Month.SEPTEMBER, 1999, Month.JUNE, "position", "Description")),
+                new Organization("ZAO", "url2",
+                        new Organization.Content(1984, Month.SEPTEMBER, 1994, Month.JUNE, "position", "Description"))));
 
-        contact.put(ContactType.TEL, "123456789");
-        contact.put(ContactType.SKYPE, "SkYpe");
-        contact.put(ContactType.EMAIL, "@mail");
-        contact.put(ContactType.LINKEDIN, "linkId");
-        contact.put(ContactType.GITHUB, "gita");
-        contact.put(ContactType.STACKOVERFLOW, "StOver");
-        contact.put(ContactType.HOMEPAGE, "Home");
-
-        Map<SectionType, AbstractSection> section = new EnumMap<>(SectionType.class);
-
-        List<String> markedList = new ArrayList<>();
-        markedList.add("S1");
-        markedList.add("S2");
-        markedList.add("S3");
-
-        List<Organization> organizationList = new ArrayList<>();
-        Organization.Content cont_1 = new Organization.Content(DateUtil.of(1988, Month.JANUARY), DateUtil.of(1989, Month.AUGUST), "sysfdghdf", "descrdfgh");
-        Organization.Content cont_2 = new Organization.Content(DateUtil.of(1986, Month.JANUARY), DateUtil.of(1989, Month.AUGUST), "sysfdghdf", "descrdfgh");
-        organizationList.add(new Organization("ZAO", "url", cont_1, cont_2));
-        organizationList.add(new Organization("PAO", "url1111", cont_2));
-
-        section.put(SectionType.OBJECTIVE, new TextSection("Тестовая секция для позиции"));
-        section.put(SectionType.PERSONAL, new TextSection("Тестовая секция для Личных качеств"));
-        section.put(SectionType.ACHIEVEMENT, new MarkSection(markedList));
-        section.put(SectionType.QUALIFICATIONS, new MarkSection(markedList));
-        section.put(SectionType.EXPERIENCE, new OrganizationSection(organizationList));
-        section.put(SectionType.EDUCATION, new OrganizationSection(organizationList));
-
-        testResume.setContact(contact);
-        testResume.setSection(section);
 
         System.out.println(testResume.getFullName());
         for (ContactType type : ContactType.values()) {

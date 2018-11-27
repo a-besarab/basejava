@@ -17,12 +17,12 @@ public class Resume implements Comparable<Resume> {
     private Map<ContactType, String> contact = new EnumMap<>(ContactType.class);
     private Map<SectionType, AbstractSection> section = new EnumMap<>(SectionType.class);
 
-    public void setContact(Map<ContactType, String> contact) {
-        this.contact = contact;
+    public void setContact(ContactType type, String value) {
+        contact.put(type, value);
     }
 
-    public void setSection(Map<SectionType, AbstractSection> section) {
-        this.section = section;
+    public void setSection(SectionType type, AbstractSection value) {
+        section.put(type, value);
     }
 
     public String getContact(ContactType type) {
@@ -59,10 +59,7 @@ public class Resume implements Comparable<Resume> {
 
         Resume resume = (Resume) o;
 
-        if (!uuid.equals(resume.uuid)) return false;
-        if (!fullName.equals(resume.fullName)) return false;
-        if (contact != null ? !contact.equals(resume.contact) : resume.contact != null) return false;
-        return section != null ? section.equals(resume.section) : resume.section == null;
+        return uuid.equals(resume.uuid) && fullName.equals(resume.fullName) && (contact != null ? contact.equals(resume.contact) : resume.contact == null) && (section != null ? section.equals(resume.section) : resume.section == null);
     }
 
     @Override

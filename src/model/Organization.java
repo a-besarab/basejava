@@ -1,6 +1,9 @@
 package model;
 
+import util.DateUtil;
+
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -53,6 +56,10 @@ public class Organization {
             this.description = description;
         }
 
+        public Content(int yearStart, Month monthStart, int yearEnd, Month monthEnd, String position, String description) {
+            this(DateUtil.of(yearStart, monthStart), DateUtil.of(yearEnd, monthEnd), position, description);
+        }
+
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
@@ -60,10 +67,7 @@ public class Organization {
 
             Content content = (Content) o;
 
-            if (!periodStart.equals(content.periodStart)) return false;
-            if (!periodEnd.equals(content.periodEnd)) return false;
-            if (!position.equals(content.position)) return false;
-            return description != null ? description.equals(content.description) : content.description == null;
+            return periodStart.equals(content.periodStart) && periodEnd.equals(content.periodEnd) && position.equals(content.position) && (description != null ? description.equals(content.description) : content.description == null);
         }
 
         @Override
