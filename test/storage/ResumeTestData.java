@@ -7,7 +7,12 @@ import java.time.Month;
 public class ResumeTestData {
     public static void main(String[] args) {
 
-        Resume testResume = new Resume("Ivanov Ivan");
+        fillResume("testUuid","Ivanov Ivan");
+    }
+
+    public static Resume fillResume(String uuid, String name) {
+
+        Resume testResume = new Resume(uuid, name);
 
         testResume.setContact(ContactType.TEL, "123456789");
         testResume.setContact(ContactType.SKYPE, "SkYpe");
@@ -40,5 +45,6 @@ public class ResumeTestData {
         for (SectionType type : SectionType.values()) {
             System.out.println(testResume.getSection(type));
         }
+        return testResume;
     }
 }
