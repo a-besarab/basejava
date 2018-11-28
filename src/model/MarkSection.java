@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Objects;
 
 public class MarkSection extends AbstractSection {
+    private static final long serialVersionUID =1L;
+
     private final List<String> markList;
 
     public MarkSection(List<String> markList) {

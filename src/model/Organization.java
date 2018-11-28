@@ -2,12 +2,15 @@ package model;
 
 import util.DateUtil;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Arrays;
 import java.util.Objects;
 
-public class Organization {
+public class Organization implements Serializable{
+    private static final long serialVersionUID =1L;
+
     private final Link homePage;
     private final Organization.Content[] content;
 
@@ -40,7 +43,9 @@ public class Organization {
         return "Organization: " + homePage + Arrays.toString(content);
     }
 
-    public static class Content {
+    public static class Content implements Serializable{
+        private static final long serialVersionUID =1L;
+
         private final LocalDate periodStart;
         private final LocalDate periodEnd;
         private final String position;
