@@ -23,12 +23,12 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path> {
     }
 
     @Override
-    protected boolean isExist(Path file) {
-        return Files.is;
+    protected boolean isExist(Path path) {
+        return Files.exists(path);
     }
 
     @Override
-    protected void doSave(Resume resume, Path file) {
+    protected void doSave(Resume resume, Path path) {
 //TODO
     }
 
@@ -37,34 +37,34 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path> {
     protected abstract Resume doRead(InputStream is) throws IOException;
 
     @Override
-    protected void doUpdate(Resume resume, Path file) {//TODO
+    protected void doUpdate(Resume resume, Path path) {//TODO
         try {
-            doWrite(resume, new BufferedOutputStream(new FileOutputStream(file)));
+            doWrite(resume, new BufferedOutputStream(new FileOutputStream(path)));
         } catch (IOException e) {
-            throw new StorageException("IO error", file.getName(), e);
+            throw new StorageException("IO error", path.getName(), e);
         }
     }
 
     @Override
-    protected Resume doGet(Path file) {//TODO
+    protected Resume doGet(Path path) {//TODO
         try {
-            return doRead(new BufferedInputStream(new FileInputStream(file)));
+            return doRead(new BufferedInputStream(new FileInputStream(path)));
         } catch (IOException e) {
-            throw new StorageException("IO error", file.getName(), e);
+            throw new StorageException("IO error", path.getName(), e);
         }
     }
 
     @Override
-    protected void doDelete(Path file) {//TODO
-        if (!file.delete()) {
-            throw new StorageException("File delete error", file.getName());
+    protected void doDelete(Path path) {//TODO
+        if (!path.delete()) {
+            throw new StorageException("File delete error", path.getName());
         }
     }
 
     @Override
-    protected Path getSearchKey(String index) {
-        return new Path(directory, index);
-    }//TODO
+    protected Path getSearchKey(String uuid) {
+        return new Path();//TODO
+    }
 
     @Override
     protected List<Resume> doCopyAll() {//TODO
