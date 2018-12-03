@@ -38,40 +38,41 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path> {
 
     @Override
     protected void doUpdate(Resume resume, Path path) {//TODO
-        try {
-            doWrite(resume, new BufferedOutputStream(new FileOutputStream(path)));
-        } catch (IOException e) {
-            throw new StorageException("IO error", path.getName(), e);
-        }
+//        try {
+//            doWrite(resume, new BufferedOutputStream(new FileOutputStream(path)));
+//        } catch (IOException e) {
+//            throw new StorageException("IO error", path.getName(), e);
+//        }
     }
 
     @Override
     protected Resume doGet(Path path) {//TODO
-        try {
-            return doRead(new BufferedInputStream(new FileInputStream(path)));
-        } catch (IOException e) {
-            throw new StorageException("IO error", path.getName(), e);
-        }
+//        try {
+//            return doRead(new BufferedInputStream(new FileInputStream(path)));
+//        } catch (IOException e) {
+//            throw new StorageException("IO error", path.getName(), e);
+//        }
+        return new Resume("te");
     }
 
     @Override
     protected void doDelete(Path path) {//TODO
-        if (!path.delete()) {
-            throw new StorageException("File delete error", path.getName());
-        }
+//        if (!path.delete()) {
+//            throw new StorageException("File delete error", path.getName());
+//        }
     }
 
     @Override
     protected Path getSearchKey(String uuid) {
-        return new Path();//TODO
+        return directory;//TODO
     }
 
     @Override
     protected List<Resume> doCopyAll() {//TODO
         ArrayList<Resume> list = new ArrayList<>();
-        for (Path file : Objects.requireNonNull(directory.listFiles())) {
-            list.add(doGet(file));
-        }
+//        for (Path file : Objects.requireNonNull(directory.listFiles())) {
+//            list.add(doGet(file));
+//        }
         return list;
     }
 
