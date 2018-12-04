@@ -11,10 +11,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public abstract class AbstractPathStorage extends AbstractStorage<Path> {
+public class AbstractPathStorage extends AbstractStorage<Path> {
     private Path directory;
+    private Serialization serialization;
 
-    protected AbstractPathStorage(String dir) {
+    protected AbstractPathStorage(String dir, Serialization serialization) {
+        this.serialization = serialization;
         directory = Paths.get(dir);
         Objects.requireNonNull(directory, "directory mast not be null");
         if (!Files.isDirectory(directory) || !Files.isWritable(directory)) {
@@ -37,14 +39,10 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path> {
         doUpdate(resume, path);
     }
 
-    protected abstract void doWrite(Resume resume, OutputStream os) throws IOException;
-
-    protected abstract Resume doRead(InputStream is) throws IOException;
-
     @Override
     protected void doUpdate(Resume resume, Path path) {
         try {
-            doWrite(resume, new BufferedOutputStream(Files.newOutputStream(path)));
+            serialization.doWrite(resume, new BufferedOutputStream(Files.newOutputStream(path)));
         } catch (IOException e) {
             throw new StorageException("Path update error", resume.getUuid(), e);
         }
@@ -53,7 +51,7 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path> {
     @Override
     protected Resume doGet(Path path) {
         try {
-            return doRead(new BufferedInputStream(Files.newInputStream(path)));
+            return serialization.doRead(new BufferedInputStream(Files.newInputStream(path)));
         } catch (IOException e) {
             throw new StorageException("Path read error", path.getFileName().toString(), e);
         }
