@@ -1,5 +1,8 @@
 package model;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.util.EnumMap;
 import java.util.Map;
@@ -9,12 +12,14 @@ import java.util.UUID;
 /**
  * Initial resume class
  */
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Resume implements Comparable<Resume>, Serializable {
     private static final long serialVersionUID = 1L;
 
     // Unique identifier
-    private final String uuid;
-    private final String fullName;
+    private String uuid;
+    private String fullName;
 
     private Map<ContactType, String> contact = new EnumMap<>(ContactType.class);
     private Map<SectionType, AbstractSection> section = new EnumMap<>(SectionType.class);
@@ -33,6 +38,9 @@ public class Resume implements Comparable<Resume>, Serializable {
 
     public AbstractSection getSection(SectionType type) {
         return section.get(type);
+    }
+
+    public Resume() {
     }
 
     public Resume(String fullName) {
@@ -58,19 +66,17 @@ public class Resume implements Comparable<Resume>, Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         Resume resume = (Resume) o;
-
-        return uuid.equals(resume.uuid) && fullName.equals(resume.fullName) && (contact != null ? contact.equals(resume.contact) : resume.contact == null) && (section != null ? section.equals(resume.section) : resume.section == null);
+        return Objects.equals(uuid, resume.uuid) &&
+                Objects.equals(fullName, resume.fullName) &&
+                Objects.equals(contact, resume.contact) &&
+                Objects.equals(section, resume.section);
     }
 
     @Override
     public int hashCode() {
-        int result = uuid.hashCode();
-        result = 31 * result + fullName.hashCode();
-        result = 31 * result + (contact != null ? contact.hashCode() : 0);
-        result = 31 * result + (section != null ? section.hashCode() : 0);
-        return result;
+
+        return Objects.hash(uuid, fullName, contact, section);
     }
 
     @Override

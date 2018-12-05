@@ -5,7 +5,7 @@ import java.util.Objects;
 public class TextSection extends AbstractSection {
     private static final long serialVersionUID =1L;
 
-    private final String text;
+    private String text;
 
     public TextSection(String text) {
         Objects.requireNonNull(text, "Text must not be null");
@@ -14,6 +14,9 @@ public class TextSection extends AbstractSection {
 
     public String getText() {
         return text;
+    }
+
+    public TextSection() {
     }
 
     @Override

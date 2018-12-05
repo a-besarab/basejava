@@ -1,41 +1,44 @@
 package model;
 
 import util.DateUtil;
+import util.LocalDateAdapter;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Arrays;
 import java.util.Objects;
 
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Organization implements Serializable{
     private static final long serialVersionUID =1L;
 
-    private final Link homePage;
-    private final Organization.Content[] content;
+    private Link homePage;
+    private Organization.Content[] content;
 
-    public Organization(String name, String url, Organization.Content... list) {
+    public Organization() {
+    }
+
+    public Organization(String name, String url, Organization.Content... content) {
         this.homePage = new Link(name, url);
-        this.content = list;
+        this.content = content;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         Organization that = (Organization) o;
-
-        if (!homePage.equals(that.homePage)) return false;
-        // Probably incorrect - comparing Object[] arrays with Arrays.equals
-        return Arrays.equals(content, that.content);
+        return Objects.equals(homePage, that.homePage) &&
+                Arrays.equals(content, that.content);
     }
 
     @Override
     public int hashCode() {
-        int result = homePage.hashCode();
-        result = 31 * result + Arrays.hashCode(content);
-        return result;
+        return Objects.hash(homePage, content);
     }
 
     @Override
@@ -43,13 +46,19 @@ public class Organization implements Serializable{
         return "Organization: " + homePage + Arrays.toString(content);
     }
 
+    @XmlAccessorType(XmlAccessType.FIELD)
     public static class Content implements Serializable{
         private static final long serialVersionUID =1L;
 
-        private final LocalDate periodStart;
-        private final LocalDate periodEnd;
-        private final String position;
-        private final String description;
+        @XmlJavaTypeAdapter(LocalDateAdapter.class)
+        private LocalDate periodStart;
+        @XmlJavaTypeAdapter(LocalDateAdapter.class)
+        private LocalDate periodEnd;
+        private String position;
+        private String description;
+
+        public Content() {
+        }
 
         public Content(LocalDate periodStart, LocalDate periodEnd, String position, String description) {
             Objects.requireNonNull(periodStart, "periodStart must not be null");

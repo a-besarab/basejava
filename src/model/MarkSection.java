@@ -7,7 +7,10 @@ import java.util.Objects;
 public class MarkSection extends AbstractSection {
     private static final long serialVersionUID =1L;
 
-    private final List<String> markList;
+    private List<String> markList;
+
+    public MarkSection() {
+    }
 
     public MarkSection(List<String> markList) {
         Objects.requireNonNull(markList, "markList must not be null");
