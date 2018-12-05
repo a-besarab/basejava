@@ -46,22 +46,22 @@ public abstract class AbstractStorage<SK> implements Storage {
     }
 
     private SK checkNotExist(String uuid) {
-        SK index = getSearchKey(uuid);
-        if (isExist(index)) {
+        SK SearchKey = getSearchKey(uuid);
+        if (isExist(SearchKey)) {
             LOG.warning("Resume " + uuid + " not exist.");
             throw new ExistStorageException(uuid);
         } else {
-            return index;
+            return SearchKey;
         }
     }
 
     private SK checkExist(String uuid) {
-        SK index = getSearchKey(uuid);
-        if (!isExist(index)) {
+        SK SearchKey = getSearchKey(uuid);
+        if (!isExist(SearchKey)) {
             LOG.warning("Resume " + uuid + " already exist.");
             throw new NotExistStorageException(uuid);
         } else {
-            return index;
+            return SearchKey;
         }
     }
 

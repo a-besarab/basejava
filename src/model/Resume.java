@@ -10,7 +10,7 @@ import java.util.UUID;
  * Initial resume class
  */
 public class Resume implements Comparable<Resume>, Serializable {
-    private static final long serialVersionUID =1L;
+    private static final long serialVersionUID = 1L;
 
     // Unique identifier
     private final String uuid;
@@ -80,10 +80,7 @@ public class Resume implements Comparable<Resume>, Serializable {
 
     @Override
     public int compareTo(Resume o) {
-        int result = this.fullName.compareTo(o.fullName);
-        if (result == 0) {
-            result = this.uuid.compareTo(o.uuid);
-        }
-        return result;
+        int result = fullName.compareTo(o.fullName);
+        return result == 0 ? uuid.compareTo(o.uuid) : result;
     }
 }

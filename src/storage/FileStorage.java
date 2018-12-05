@@ -2,17 +2,18 @@ package storage;
 
 import exception.StorageException;
 import model.Resume;
+import storage.serialization.Serialization;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class AbstractFileStorage extends AbstractStorage<File> {
+public class FileStorage extends AbstractStorage<File> {
     private File directory;
     private Serialization serialization;
 
-    protected AbstractFileStorage(File directory, Serialization serialization) {
+    protected FileStorage(File directory, Serialization serialization) {
         this.serialization = serialization;
         Objects.requireNonNull(directory, "directory mast not be null");
         if (!directory.isDirectory()) {
@@ -38,8 +39,6 @@ public class AbstractFileStorage extends AbstractStorage<File> {
             throw new StorageException("IO error", file.getName(), e);
         }
     }
-
-
 
     @Override
     protected void doUpdate(Resume resume, File file) {
