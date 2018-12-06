@@ -38,13 +38,13 @@ public class ResumeTestData {
                         new Organization.Content(1984, Month.SEPTEMBER, 1994, Month.JUNE, "position", "Description"))));
 
 
-        System.out.println(testResume.getFullName());
-        for (ContactType type : ContactType.values()) {
-            System.out.println(testResume.getContact(type));
-        }
-        for (SectionType type : SectionType.values()) {
-            System.out.println(testResume.getSection(type));
-        }
+//        System.out.println(testResume.getFullName());
+//        for (ContactType type : ContactType.values()) {
+//            System.out.println(testResume.getContact(type));
+//        }
+//        for (SectionType type : SectionType.values()) {
+//            System.out.println(testResume.getSection(type));
+//        }
         return testResume;
     }
 }
