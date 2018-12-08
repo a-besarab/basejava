@@ -19,6 +19,14 @@ public class Organization implements Serializable{
     private Link homePage;
     private Organization.Content[] content;
 
+    public Link getHomePage() {
+        return homePage;
+    }
+
+    public Content[] getContent() {
+        return content;
+    }
+
     public Organization() {
     }
 
