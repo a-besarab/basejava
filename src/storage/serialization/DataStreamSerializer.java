@@ -4,6 +4,8 @@ package storage.serialization;
 import model.*;
 
 import java.io.*;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -20,6 +22,9 @@ public class DataStreamSerializer implements Serialization {
                 dos.writeUTF(entry.getKey().name());
                 dos.writeUTF(entry.getValue());
             }
+
+//            Map<SectionType, AbstractSection> sections = resume.getSections();
+//            dos.writeInt(sections.size());
 
             for (Map.Entry<SectionType, AbstractSection> entry : resume.getSections().entrySet()) {
                 SectionType type = entry.getKey();
@@ -88,16 +93,74 @@ public class DataStreamSerializer implements Serialization {
                 resume.setContact(ContactType.valueOf(dis.readUTF()), dis.readUTF());
             }
 
+         //   int size2 = dis.readInt();
 
-//            int size1 = dis.readInt();
-//            for (int i = 0; i < size1; i++) {
-//                resume.setSection(SectionType.valueOf(dis.readUTF()), new OrganizationSection(
-//                        new Organization(dis.readUTF(), dis.readUTF(),
-//                                new Organization.Content(java.time.LocalDate.parse(dis.readUTF()), java.time.LocalDate.parse(dis.readUTF()), dis.readUTF(), dis.readUTF()))));
-//            }
 
-//TODO
+            SectionType sectionType = SectionType.valueOf(dis.readUTF());
+         //   for (int i = 0; i < size2; i++) {
+
+
+            resume.setSection(sectionType, readSection(dis, sectionType));
+           // resume.setSection(sectionType, readSection(dis, sectionType));
+            //}
+
+            System.out.println(resume.getFullName());
+            for (ContactType type : ContactType.values()) {
+                System.out.println(resume.getContact(type));
+            }
+            for (SectionType type : SectionType.values()) {
+                System.out.println(resume.getSection(type));
+            }
             return resume;
         }
+    }
+
+    private AbstractSection readSection(DataInputStream dis, SectionType sectionType) throws IOException {
+        switch (sectionType) {
+            case OBJECTIVE:
+                //return new TextSection(dis.readUTF());
+            case PERSONAL:
+                return new TextSection(dis.readUTF());
+            case ACHIEVEMENT:
+                int size = dis.readInt();
+                List<String> list = new ArrayList<>();
+                for (int i = 0; i < size; i++) {
+                    list.add(dis.readUTF());
+                }
+                return new MarkSection(list);
+            case QUALIFICATIONS:
+                int size2 = dis.readInt();
+                List<String> list2 = new ArrayList<>();
+                for (int i = 0; i < size2; i++) {
+                    list2.add(dis.readUTF());
+                }
+                return new MarkSection(list2);
+            case EXPERIENCE:
+                int size3 = dis.readInt();
+                List<Organization> list3 = new ArrayList<>();
+                for (int i = 0; i < size3; i++) {
+                    list3.add(new Organization(dis.readUTF(), dis.readUTF(), content(dis)));
+                }
+                return new OrganizationSection(list3);
+            case EDUCATION:
+                int size4 = dis.readInt();
+                List<Organization> list4 = new ArrayList<>();
+                for (int i = 0; i < size4; i++) {
+                    list4.add(new Organization(dis.readUTF(), dis.readUTF(), content(dis)));
+                }
+                return new OrganizationSection(list4);
+            default:
+                throw new IllegalStateException();
+        }
+    }
+
+    private Organization.Content[] content(DataInputStream dis) throws IOException {
+        int size = dis.readInt();
+        Organization.Content[] content = new Organization.Content[size];
+        for (int i = 0; i < size; i++) {
+            content[i] = new Organization.Content(LocalDate.of(dis.readInt(), dis.readInt(), 1),
+                    LocalDate.of(dis.readInt(), dis.readInt(), 1), dis.readUTF(), dis.readUTF());
+        }
+        return content;
     }
 }
