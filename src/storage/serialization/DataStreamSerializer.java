@@ -16,6 +16,7 @@ public class DataStreamSerializer implements Serialization {
         try (DataOutputStream dos = new DataOutputStream(os)) {
             dos.writeUTF(resume.getUuid());
             dos.writeUTF(resume.getFullName());
+
             Map<ContactType, String> contacts = resume.getContacts();
             dos.writeInt(contacts.size());
             for (Map.Entry<ContactType, String> entry : resume.getContacts().entrySet()) {
@@ -25,50 +26,29 @@ public class DataStreamSerializer implements Serialization {
 
             Map<SectionType, AbstractSection> sections = resume.getSections();
             dos.writeInt(sections.size());
-
             for (Map.Entry<SectionType, AbstractSection> entry : resume.getSections().entrySet()) {
                 SectionType type = entry.getKey();
                 switch (type) {
                     case OBJECTIVE:
-                        dos.writeUTF(entry.getKey().name());
-                        dos.writeUTF(entry.getValue().toString());
-                        break;
                     case PERSONAL:
                         dos.writeUTF(entry.getKey().name());
                         dos.writeUTF(entry.getValue().toString());
                         break;
                     case ACHIEVEMENT:
-                        MarkSection achievement = (MarkSection) entry.getValue();
-                        dos.writeUTF(entry.getKey().name());
-                        dos.writeInt(achievement.getMarkList().size());
-                        for (String str : achievement.getMarkList()) {
-                            dos.writeUTF(str);
-                        }
-                        break;
                     case QUALIFICATIONS:
-                        MarkSection qualifications = (MarkSection) entry.getValue();
+                        MarkSection markSection = (MarkSection) entry.getValue();
                         dos.writeUTF(entry.getKey().name());
-                        dos.writeInt(qualifications.getMarkList().size());
-                        for (String str : qualifications.getMarkList()) {
+                        dos.writeInt(markSection.getMarkList().size());
+                        for (String str : markSection.getMarkList()) {
                             dos.writeUTF(str);
                         }
                         break;
                     case EXPERIENCE:
-                        OrganizationSection experience = (OrganizationSection) entry.getValue();
-                        dos.writeUTF(entry.getKey().name());
-                        dos.writeInt(experience.getOrganization().size());
-                        for (Organization organization : experience.getOrganization()) {
-                            dos.writeUTF(organization.getHomePage().getName());
-                            dos.writeUTF(organization.getHomePage().getUrl());
-                            dos.writeInt(organization.getContent().length);
-                            writeContent(dos, organization);
-                        }
-                        break;
                     case EDUCATION:
-                        OrganizationSection education = (OrganizationSection) entry.getValue();
+                        OrganizationSection organizationSection = (OrganizationSection) entry.getValue();
                         dos.writeUTF(entry.getKey().name());
-                        dos.writeInt(education.getOrganization().size());
-                        for (Organization organization : education.getOrganization()) {
+                        dos.writeInt(organizationSection.getOrganization().size());
+                        for (Organization organization : organizationSection.getOrganization()) {
                             dos.writeUTF(organization.getHomePage().getName());
                             dos.writeUTF(organization.getHomePage().getUrl());
                             dos.writeInt(organization.getContent().length);
@@ -95,7 +75,6 @@ public class DataStreamSerializer implements Serialization {
                 SectionType sectionType = SectionType.valueOf(dis.readUTF());
                 resume.setSection(sectionType, readSection(dis, sectionType));
             }
-
             return resume;
         }
     }
@@ -103,37 +82,24 @@ public class DataStreamSerializer implements Serialization {
     private AbstractSection readSection(DataInputStream dis, SectionType sectionType) throws IOException {
         switch (sectionType) {
             case OBJECTIVE:
-                return new TextSection(dis.readUTF());
             case PERSONAL:
                 return new TextSection(dis.readUTF());
             case ACHIEVEMENT:
-                int sizeAchievement = dis.readInt();
-                List<String> listAchievement = new ArrayList<>();
-                for (int i = 0; i < sizeAchievement; i++) {
-                    listAchievement.add(dis.readUTF());
-                }
-                return new MarkSection(listAchievement);
             case QUALIFICATIONS:
-                int sizeQualifications = dis.readInt();
-                List<String> listQualifications = new ArrayList<>();
-                for (int i = 0; i < sizeQualifications; i++) {
-                    listQualifications.add(dis.readUTF());
+                int sizeMarkSection = dis.readInt();
+                List<String> markSection = new ArrayList<>();
+                for (int i = 0; i < sizeMarkSection; i++) {
+                    markSection.add(dis.readUTF());
                 }
-                return new MarkSection(listQualifications);
+                return new MarkSection(markSection);
             case EXPERIENCE:
-                int sizeExperience = dis.readInt();
-                List<Organization> listExperience = new ArrayList<>();
-                for (int i = 0; i < sizeExperience; i++) {
-                    listExperience.add(new Organization(dis.readUTF(), dis.readUTF(), readContent(dis)));
-                }
-                return new OrganizationSection(listExperience);
             case EDUCATION:
-                int sizeEducation = dis.readInt();
-                List<Organization> listEducation = new ArrayList<>();
-                for (int i = 0; i < sizeEducation; i++) {
-                    listEducation.add(new Organization(dis.readUTF(), dis.readUTF(), readContent(dis)));
+                int sizeOrganizationSection = dis.readInt();
+                List<Organization> organizationSection = new ArrayList<>();
+                for (int i = 0; i < sizeOrganizationSection; i++) {
+                    organizationSection.add(new Organization(dis.readUTF(), dis.readUTF(), readContent(dis)));
                 }
-                return new OrganizationSection(listEducation);
+                return new OrganizationSection(organizationSection);
             default:
                 throw new IllegalStateException();
         }
