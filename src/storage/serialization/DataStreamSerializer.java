@@ -23,8 +23,8 @@ public class DataStreamSerializer implements Serialization {
                 dos.writeUTF(entry.getValue());
             }
 
-//            Map<SectionType, AbstractSection> sections = resume.getSections();
-//            dos.writeInt(sections.size());
+            Map<SectionType, AbstractSection> sections = resume.getSections();
+            dos.writeInt(sections.size());
 
             for (Map.Entry<SectionType, AbstractSection> entry : resume.getSections().entrySet()) {
                 SectionType type = entry.getKey();
@@ -39,44 +39,40 @@ public class DataStreamSerializer implements Serialization {
                         break;
                     case ACHIEVEMENT:
                         MarkSection achievement = (MarkSection) entry.getValue();
-                        dos.writeInt(achievement.getMarkList().size());
                         dos.writeUTF(entry.getKey().name());
+                        dos.writeInt(achievement.getMarkList().size());
                         for (String str : achievement.getMarkList()) {
                             dos.writeUTF(str);
                         }
                         break;
                     case QUALIFICATIONS:
                         MarkSection qualifications = (MarkSection) entry.getValue();
-                        dos.writeInt(qualifications.getMarkList().size());
                         dos.writeUTF(entry.getKey().name());
+                        dos.writeInt(qualifications.getMarkList().size());
                         for (String str : qualifications.getMarkList()) {
                             dos.writeUTF(str);
                         }
                         break;
                     case EXPERIENCE:
                         OrganizationSection experience = (OrganizationSection) entry.getValue();
-                        dos.writeInt(experience.getOrganization().size());
                         dos.writeUTF(entry.getKey().name());
-                        for (Organization org : experience.getOrganization()) {
-                            dos.writeUTF(org.getHomePage().getName());
-                            dos.writeUTF(org.getHomePage().getUrl());
-                            dos.writeInt(org.getContent().length);
-                            for (Object str : org.getContent()) {
-                                dos.writeUTF(str.toString());
-                            }
+                        dos.writeInt(experience.getOrganization().size());
+                        for (Organization organization : experience.getOrganization()) {
+                            dos.writeUTF(organization.getHomePage().getName());
+                            dos.writeUTF(organization.getHomePage().getUrl());
+                            dos.writeInt(organization.getContent().length);
+                            writeContent(dos, organization);
                         }
                         break;
                     case EDUCATION:
                         OrganizationSection education = (OrganizationSection) entry.getValue();
-                        dos.writeInt(education.getOrganization().size());
                         dos.writeUTF(entry.getKey().name());
-                        for (Organization org : education.getOrganization()) {
-                            dos.writeUTF(org.getHomePage().getName());
-                            dos.writeUTF(org.getHomePage().getUrl());
-                            dos.writeInt(org.getContent().length);
-                            for (Object str : org.getContent()) {
-                                dos.writeUTF(str.toString());
-                            }
+                        dos.writeInt(education.getOrganization().size());
+                        for (Organization organization : education.getOrganization()) {
+                            dos.writeUTF(organization.getHomePage().getName());
+                            dos.writeUTF(organization.getHomePage().getUrl());
+                            dos.writeInt(organization.getContent().length);
+                            writeContent(dos, organization);
                         }
                         break;
                 }
@@ -88,29 +84,18 @@ public class DataStreamSerializer implements Serialization {
     public Resume doRead(InputStream is) throws IOException {
         try (DataInputStream dis = new DataInputStream(is)) {
             Resume resume = new Resume(dis.readUTF(), dis.readUTF());
-            int size = dis.readInt();
-            for (int i = 0; i < size; i++) {
+
+            int sizeContact = dis.readInt();
+            for (int i = 0; i < sizeContact; i++) {
                 resume.setContact(ContactType.valueOf(dis.readUTF()), dis.readUTF());
             }
 
-         //   int size2 = dis.readInt();
-
-
-            SectionType sectionType = SectionType.valueOf(dis.readUTF());
-         //   for (int i = 0; i < size2; i++) {
-
-
-            resume.setSection(sectionType, readSection(dis, sectionType));
-           // resume.setSection(sectionType, readSection(dis, sectionType));
-            //}
-
-            System.out.println(resume.getFullName());
-            for (ContactType type : ContactType.values()) {
-                System.out.println(resume.getContact(type));
+            int sizeSection = dis.readInt();
+            for (int i = 0; i < sizeSection; i++) {
+                SectionType sectionType = SectionType.valueOf(dis.readUTF());
+                resume.setSection(sectionType, readSection(dis, sectionType));
             }
-            for (SectionType type : SectionType.values()) {
-                System.out.println(resume.getSection(type));
-            }
+
             return resume;
         }
     }
@@ -118,43 +103,54 @@ public class DataStreamSerializer implements Serialization {
     private AbstractSection readSection(DataInputStream dis, SectionType sectionType) throws IOException {
         switch (sectionType) {
             case OBJECTIVE:
-                //return new TextSection(dis.readUTF());
+                return new TextSection(dis.readUTF());
             case PERSONAL:
                 return new TextSection(dis.readUTF());
             case ACHIEVEMENT:
-                int size = dis.readInt();
-                List<String> list = new ArrayList<>();
-                for (int i = 0; i < size; i++) {
-                    list.add(dis.readUTF());
+                int sizeAchievement = dis.readInt();
+                List<String> listAchievement = new ArrayList<>();
+                for (int i = 0; i < sizeAchievement; i++) {
+                    listAchievement.add(dis.readUTF());
                 }
-                return new MarkSection(list);
+                return new MarkSection(listAchievement);
             case QUALIFICATIONS:
-                int size2 = dis.readInt();
-                List<String> list2 = new ArrayList<>();
-                for (int i = 0; i < size2; i++) {
-                    list2.add(dis.readUTF());
+                int sizeQualifications = dis.readInt();
+                List<String> listQualifications = new ArrayList<>();
+                for (int i = 0; i < sizeQualifications; i++) {
+                    listQualifications.add(dis.readUTF());
                 }
-                return new MarkSection(list2);
+                return new MarkSection(listQualifications);
             case EXPERIENCE:
-                int size3 = dis.readInt();
-                List<Organization> list3 = new ArrayList<>();
-                for (int i = 0; i < size3; i++) {
-                    list3.add(new Organization(dis.readUTF(), dis.readUTF(), content(dis)));
+                int sizeExperience = dis.readInt();
+                List<Organization> listExperience = new ArrayList<>();
+                for (int i = 0; i < sizeExperience; i++) {
+                    listExperience.add(new Organization(dis.readUTF(), dis.readUTF(), readContent(dis)));
                 }
-                return new OrganizationSection(list3);
+                return new OrganizationSection(listExperience);
             case EDUCATION:
-                int size4 = dis.readInt();
-                List<Organization> list4 = new ArrayList<>();
-                for (int i = 0; i < size4; i++) {
-                    list4.add(new Organization(dis.readUTF(), dis.readUTF(), content(dis)));
+                int sizeEducation = dis.readInt();
+                List<Organization> listEducation = new ArrayList<>();
+                for (int i = 0; i < sizeEducation; i++) {
+                    listEducation.add(new Organization(dis.readUTF(), dis.readUTF(), readContent(dis)));
                 }
-                return new OrganizationSection(list4);
+                return new OrganizationSection(listEducation);
             default:
                 throw new IllegalStateException();
         }
     }
 
-    private Organization.Content[] content(DataInputStream dis) throws IOException {
+    private void writeContent(DataOutputStream dos, Organization org) throws IOException {
+        for (int i = 0; i < org.getContent().length; i++) {
+            dos.writeInt(Organization.Content.getPeriodStart().getYear());
+            dos.writeInt(Organization.Content.getPeriodEnd().getMonth().getValue());
+            dos.writeInt(Organization.Content.getPeriodStart().getYear());
+            dos.writeInt(Organization.Content.getPeriodEnd().getMonth().getValue());
+            dos.writeUTF(Organization.Content.getPosition());
+            dos.writeUTF(Organization.Content.getDescription());
+        }
+    }
+
+    private Organization.Content[] readContent(DataInputStream dis) throws IOException {
         int size = dis.readInt();
         Organization.Content[] content = new Organization.Content[size];
         for (int i = 0; i < size; i++) {

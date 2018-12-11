@@ -13,8 +13,8 @@ import java.util.Arrays;
 import java.util.Objects;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Organization implements Serializable{
-    private static final long serialVersionUID =1L;
+public class Organization implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     private Link homePage;
     private Organization.Content[] content;
@@ -55,15 +55,15 @@ public class Organization implements Serializable{
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)
-    public static class Content implements Serializable{
-        private static final long serialVersionUID =1L;
+    public static class Content implements Serializable {
+        private static final long serialVersionUID = 1L;
 
         @XmlJavaTypeAdapter(LocalDateAdapter.class)
-        private LocalDate periodStart;
+        private static LocalDate periodStart;
         @XmlJavaTypeAdapter(LocalDateAdapter.class)
-        private LocalDate periodEnd;
-        private String position;
-        private String description;
+        private static LocalDate periodEnd;
+        private static String position;
+        private static String description;
 
         public Content() {
         }
@@ -72,10 +72,26 @@ public class Organization implements Serializable{
             Objects.requireNonNull(periodStart, "periodStart must not be null");
             Objects.requireNonNull(periodEnd, "periodEnd must not be null");
             Objects.requireNonNull(position, "position must not be null");
-            this.periodStart = periodStart;
-            this.periodEnd = periodEnd;
-            this.position = position;
-            this.description = description;
+            Content.periodStart = periodStart;
+            Content.periodEnd = periodEnd;
+            Content.position = position;
+            Content.description = description;
+        }
+
+        public static LocalDate getPeriodStart() {
+            return periodStart;
+        }
+
+        public static LocalDate getPeriodEnd() {
+            return periodEnd;
+        }
+
+        public static String getPosition() {
+            return position;
+        }
+
+        public static String getDescription() {
+            return description;
         }
 
         public Content(int yearStart, Month monthStart, int yearEnd, Month monthEnd, String position, String description) {
@@ -86,19 +102,14 @@ public class Organization implements Serializable{
         public boolean equals(Object o) {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
-
             Content content = (Content) o;
-
-            return periodStart.equals(content.periodStart) && periodEnd.equals(content.periodEnd) && position.equals(content.position) && (description != null ? description.equals(content.description) : content.description == null);
+            return Objects.equals(periodStart, Content.periodStart) && Objects.equals(periodEnd, Content.periodEnd) && Objects.equals(position, Content.position) &&
+                    Objects.equals(description, Content.description);
         }
 
         @Override
         public int hashCode() {
-            int result = periodStart.hashCode();
-            result = 31 * result + periodEnd.hashCode();
-            result = 31 * result + position.hashCode();
-            result = 31 * result + (description != null ? description.hashCode() : 0);
-            return result;
+            return Objects.hash(periodStart, periodEnd, position, description);
         }
 
         @Override
