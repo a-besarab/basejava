@@ -7,6 +7,9 @@ public class TextSection extends AbstractSection {
 
     private String text;
 
+    public TextSection() {
+    }
+
     public TextSection(String text) {
         Objects.requireNonNull(text, "Text must not be null");
         this.text = text;
@@ -14,9 +17,6 @@ public class TextSection extends AbstractSection {
 
     public String getText() {
         return text;
-    }
-
-    public TextSection() {
     }
 
     @Override

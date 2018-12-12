@@ -19,20 +19,20 @@ public class Organization implements Serializable {
     private Link homePage;
     private Organization.Content[] content;
 
-    public Link getHomePage() {
-        return homePage;
-    }
-
-    public Content[] getContent() {
-        return content;
-    }
-
     public Organization() {
     }
 
     public Organization(String name, String url, Organization.Content... content) {
         this.homePage = new Link(name, url);
         this.content = content;
+    }
+
+    public Link getHomePage() {
+        return homePage;
+    }
+
+    public Content[] getContent() {
+        return content;
     }
 
     @Override
@@ -78,6 +78,10 @@ public class Organization implements Serializable {
             Content.description = description;
         }
 
+        public Content(int yearStart, Month monthStart, int yearEnd, Month monthEnd, String position, String description) {
+            this(DateUtil.of(yearStart, monthStart), DateUtil.of(yearEnd, monthEnd), position, description);
+        }
+
         public static LocalDate getPeriodStart() {
             return periodStart;
         }
@@ -92,10 +96,6 @@ public class Organization implements Serializable {
 
         public static String getDescription() {
             return description;
-        }
-
-        public Content(int yearStart, Month monthStart, int yearEnd, Month monthEnd, String position, String description) {
-            this(DateUtil.of(yearStart, monthStart), DateUtil.of(yearEnd, monthEnd), position, description);
         }
 
         @Override

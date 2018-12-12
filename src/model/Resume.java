@@ -20,9 +20,23 @@ public class Resume implements Comparable<Resume>, Serializable {
     // Unique identifier
     private String uuid;
     private String fullName;
-
     private Map<ContactType, String> contact = new EnumMap<>(ContactType.class);
     private Map<SectionType, AbstractSection> section = new EnumMap<>(SectionType.class);
+
+
+    public Resume() {
+    }
+
+    public Resume(String fullName) {
+        this(UUID.randomUUID().toString(), fullName);
+    }
+
+    public Resume(String uuid, String fullName) {
+        Objects.requireNonNull(uuid, "uuid mast not be null");
+        Objects.requireNonNull(fullName, "fullName mast not be null");
+        this.uuid = uuid;
+        this.fullName = fullName;
+    }
 
     public void setContact(ContactType type, String value) {
         contact.put(type, value);
@@ -38,20 +52,6 @@ public class Resume implements Comparable<Resume>, Serializable {
 
     public AbstractSection getSection(SectionType type) {
         return section.get(type);
-    }
-
-    public Resume() {
-    }
-
-    public Resume(String fullName) {
-        this(UUID.randomUUID().toString(), fullName);
-    }
-
-    public Resume(String uuid, String fullName) {
-        Objects.requireNonNull(uuid, "uuid mast not be null");
-        Objects.requireNonNull(fullName, "fullName mast not be null");
-        this.uuid = uuid;
-        this.fullName = fullName;
     }
 
     public String getUuid() {
