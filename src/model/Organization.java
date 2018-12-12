@@ -9,7 +9,9 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -17,21 +19,25 @@ public class Organization implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Link homePage;
-    private Organization.Content[] content;
+    private List<Content> content = new ArrayList<>();
 
     public Organization() {
     }
 
-    public Organization(String name, String url, Organization.Content... content) {
-        this.homePage = new Link(name, url);
+    public Organization(Link homePage, List<Content> content) {
+        this.homePage = homePage;
         this.content = content;
+    }
+
+    public Organization(String name, String url, Content... content) {
+        this(new Link(name, url), Arrays.asList(content));
     }
 
     public Link getHomePage() {
         return homePage;
     }
 
-    public Content[] getContent() {
+    public List<Content> getContent() {
         return content;
     }
 
@@ -40,30 +46,31 @@ public class Organization implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Organization that = (Organization) o;
-        return Objects.equals(homePage, that.homePage) &&
-                Arrays.equals(content, that.content);
+        return homePage.equals(that.homePage) && content.equals(that.content);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(homePage, content);
+        int result = homePage.hashCode();
+        result = 31 * result + content.hashCode();
+        return result;
     }
 
     @Override
     public String toString() {
-        return "Organization: " + homePage + Arrays.toString(content);
+        return "Organization: " + homePage + content.toString();
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)
-    public static class Content implements Serializable {
-        private static final long serialVersionUID = 1L;
+    public class Content implements Serializable {
+        private final long serialVersionUID = 1L;
 
         @XmlJavaTypeAdapter(LocalDateAdapter.class)
-        private static LocalDate periodStart;
+        private LocalDate periodStart;
         @XmlJavaTypeAdapter(LocalDateAdapter.class)
-        private static LocalDate periodEnd;
-        private static String position;
-        private static String description;
+        private LocalDate periodEnd;
+        private String position;
+        private String description;
 
         public Content() {
         }
@@ -72,29 +79,33 @@ public class Organization implements Serializable {
             Objects.requireNonNull(periodStart, "periodStart must not be null");
             Objects.requireNonNull(periodEnd, "periodEnd must not be null");
             Objects.requireNonNull(position, "position must not be null");
-            Content.periodStart = periodStart;
-            Content.periodEnd = periodEnd;
-            Content.position = position;
-            Content.description = description;
+            this.periodStart = periodStart;
+            this.periodEnd = periodEnd;
+            this.position = position;
+            if (description == null) {
+                this.description = "Empty field.";
+            } else {
+                this.description = description;
+            }
         }
 
         public Content(int yearStart, Month monthStart, int yearEnd, Month monthEnd, String position, String description) {
             this(DateUtil.of(yearStart, monthStart), DateUtil.of(yearEnd, monthEnd), position, description);
         }
 
-        public static LocalDate getPeriodStart() {
+        public LocalDate getPeriodStart() {
             return periodStart;
         }
 
-        public static LocalDate getPeriodEnd() {
+        public LocalDate getPeriodEnd() {
             return periodEnd;
         }
 
-        public static String getPosition() {
+        public String getPosition() {
             return position;
         }
 
-        public static String getDescription() {
+        public String getDescription() {
             return description;
         }
 
@@ -103,13 +114,17 @@ public class Organization implements Serializable {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             Content content = (Content) o;
-            return Objects.equals(periodStart, Content.periodStart) && Objects.equals(periodEnd, Content.periodEnd) && Objects.equals(position, Content.position) &&
-                    Objects.equals(description, Content.description);
+            return periodStart.equals(content.periodStart) && periodEnd.equals(content.periodEnd) && position.equals(content.position) && description.equals(content.description);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(periodStart, periodEnd, position, description);
+            int result = (int) (serialVersionUID);
+            result = 31 * result + periodStart.hashCode();
+            result = 31 * result + periodEnd.hashCode();
+            result = 31 * result + position.hashCode();
+            result = 31 * result + description.hashCode();
+            return result;
         }
 
         @Override

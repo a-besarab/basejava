@@ -2,9 +2,11 @@ package storage.serialization;
 
 
 import model.*;
+import util.DateUtil;
 
 import java.io.*;
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -31,13 +33,13 @@ public class DataStreamSerializer implements Serialization {
                 switch (type) {
                     case OBJECTIVE:
                     case PERSONAL:
-                        dos.writeUTF(entry.getKey().name());
+                        writeSectionName(dos, entry.getKey().name());
                         dos.writeUTF(entry.getValue().toString());
                         break;
                     case ACHIEVEMENT:
                     case QUALIFICATIONS:
                         MarkSection markSection = (MarkSection) entry.getValue();
-                        dos.writeUTF(entry.getKey().name());
+                        writeSectionName(dos, entry.getKey().name());
                         dos.writeInt(markSection.getMarkList().size());
                         for (String str : markSection.getMarkList()) {
                             dos.writeUTF(str);
@@ -46,18 +48,22 @@ public class DataStreamSerializer implements Serialization {
                     case EXPERIENCE:
                     case EDUCATION:
                         OrganizationSection organizationSection = (OrganizationSection) entry.getValue();
-                        dos.writeUTF(entry.getKey().name());
+                        writeSectionName(dos, entry.getKey().name());
                         dos.writeInt(organizationSection.getOrganization().size());
                         for (Organization organization : organizationSection.getOrganization()) {
                             dos.writeUTF(organization.getHomePage().getName());
                             dos.writeUTF(organization.getHomePage().getUrl());
-                            dos.writeInt(organization.getContent().length);
-                            writeContent(dos, organization);
+                            dos.writeInt(organization.getContent().size());
+                            writeContent(dos, organization.getContent());
                         }
                         break;
                 }
             }
         }
+    }
+
+    private void writeSectionName(DataOutputStream dos, String name) throws IOException {
+        dos.writeUTF(name);
     }
 
     @Override
@@ -97,7 +103,7 @@ public class DataStreamSerializer implements Serialization {
                 int sizeOrganizationSection = dis.readInt();
                 List<Organization> organizationSection = new ArrayList<>();
                 for (int i = 0; i < sizeOrganizationSection; i++) {
-                    organizationSection.add(new Organization(dis.readUTF(), dis.readUTF(), readContent(dis)));
+                    organizationSection.add(new Organization(new Link(dis.readUTF(), dis.readUTF()), readContent(dis)));
                 }
                 return new OrganizationSection(organizationSection);
             default:
@@ -105,24 +111,31 @@ public class DataStreamSerializer implements Serialization {
         }
     }
 
-    private void writeContent(DataOutputStream dos, Organization org) throws IOException {
-        for (int i = 0; i < org.getContent().length; i++) {
-            dos.writeInt(Organization.Content.getPeriodStart().getYear());
-            dos.writeInt(Organization.Content.getPeriodEnd().getMonth().getValue());
-            dos.writeInt(Organization.Content.getPeriodStart().getYear());
-            dos.writeInt(Organization.Content.getPeriodEnd().getMonth().getValue());
-            dos.writeUTF(Organization.Content.getPosition());
-            dos.writeUTF(Organization.Content.getDescription());
+    private void writeContent(DataOutputStream dos, List<Organization.Content> contentList) throws IOException {
+        for (Organization.Content aContentList : contentList) {
+            writeDate(dos, aContentList.getPeriodStart());
+            writeDate(dos, aContentList.getPeriodEnd());
+            dos.writeUTF(aContentList.getPosition());
+            dos.writeUTF(aContentList.getDescription());
         }
     }
 
-    private Organization.Content[] readContent(DataInputStream dis) throws IOException {
+    private List<Organization.Content> readContent(DataInputStream dis) throws IOException {
         int size = dis.readInt();
-        Organization.Content[] content = new Organization.Content[size];
+        List<Organization.Content> contentList = new ArrayList<>();
         for (int i = 0; i < size; i++) {
-            content[i] = new Organization.Content(LocalDate.of(dis.readInt(), dis.readInt(), 1),
-                    LocalDate.of(dis.readInt(), dis.readInt(), 1), dis.readUTF(), dis.readUTF());
+            contentList.add(new Organization().new Content(readDate(dis), readDate(dis), dis.readUTF(), dis.readUTF()));
+
         }
-        return content;
+        return contentList;
+    }
+
+    private void writeDate(DataOutputStream dos, LocalDate localdate) throws IOException {
+        dos.writeInt(localdate.getYear());
+        dos.writeInt(localdate.getMonth().getValue());
+    }
+
+    private LocalDate readDate(DataInputStream dis) throws IOException {
+        return DateUtil.of(dis.readInt(), Month.of(dis.readInt()));
     }
 }
