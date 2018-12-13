@@ -10,7 +10,6 @@ import java.time.Month;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 public class DataStreamSerializer implements Serialization {
 
@@ -20,18 +19,14 @@ public class DataStreamSerializer implements Serialization {
             dos.writeUTF(resume.getUuid());
             dos.writeUTF(resume.getFullName());
 
-            Map<ContactType, String> contacts = resume.getContacts();
-            dos.writeInt(contacts.size());
-
-            writeWithException(dos, contacts.entrySet(), writeInterface -> {
+            writeWithException(dos, resume.getContacts().entrySet(), writeInterface ->
+            {
                 dos.writeUTF(writeInterface.getKey().name());
                 dos.writeUTF(writeInterface.getValue());
             });
 
-            Map<SectionType, AbstractSection> sections = resume.getSections();
-            dos.writeInt(sections.size());
-
-            writeWithException(dos, sections.entrySet(), writeInterface -> {
+            writeWithException(dos, resume.getSections().entrySet(), writeInterface ->
+            {
                 SectionType type = writeInterface.getKey();
                 dos.writeUTF(writeInterface.getKey().name());
                 switch (type) {
@@ -41,20 +36,22 @@ public class DataStreamSerializer implements Serialization {
                         break;
                     case ACHIEVEMENT:
                     case QUALIFICATIONS:
-                        MarkSection markSection = (MarkSection) writeInterface.getValue();
-                        dos.writeInt(markSection.getMarkList().size());
-                        writeWithException(dos, markSection.getMarkList(), dos::writeUTF);
+                        writeWithException(dos, ((MarkSection) writeInterface.getValue()).getMarkList(), dos::writeUTF);
                         break;
                     case EXPERIENCE:
                     case EDUCATION:
-                        OrganizationSection organizationSection = (OrganizationSection) writeInterface.getValue();
-                        dos.writeInt(organizationSection.getOrganization().size());
-                        for (Organization organization : organizationSection.getOrganization()) {
-                            dos.writeUTF(organization.getHomePage().getName());
-                            dos.writeUTF(organization.getHomePage().getUrl());
-                            dos.writeInt(organization.getContent().size());
-                            writeContent(dos, organization.getContent());
-                        }
+                        writeWithException(dos, ((OrganizationSection) writeInterface.getValue()).getOrganization(), org ->
+                        {
+                            dos.writeUTF(org.getHomePage().getName());
+                            dos.writeUTF(org.getHomePage().getUrl());
+                            writeWithException(dos, org.getContent(), section ->
+                            {
+                                writeDate(dos, section.getPeriodStart());
+                                writeDate(dos, section.getPeriodEnd());
+                                dos.writeUTF(section.getPosition());
+                                dos.writeUTF(section.getDescription());
+                            });
+                        });
                         break;
                 }
             });
@@ -66,8 +63,9 @@ public class DataStreamSerializer implements Serialization {
         void write(T t) throws IOException;
     }
 
-    private <T> void writeWithException(DataOutputStream dos, Collection<T> contacts, WriteInterface<T> writeInterface) throws IOException {
-        for (T item : contacts) {
+    private <T> void writeWithException(DataOutputStream dos, Collection<T> collection, WriteInterface<T> writeInterface) throws IOException {
+        dos.writeInt(collection.size());
+        for (T item : collection) {
             writeInterface.write(item);
         }
     }
@@ -114,15 +112,6 @@ public class DataStreamSerializer implements Serialization {
                 return new OrganizationSection(organizationSection);
             default:
                 throw new IllegalStateException();
-        }
-    }
-
-    private void writeContent(DataOutputStream dos, List<Organization.Content> contentList) throws IOException {
-        for (Organization.Content aContentList : contentList) {
-            writeDate(dos, aContentList.getPeriodStart());
-            writeDate(dos, aContentList.getPeriodEnd());
-            dos.writeUTF(aContentList.getPosition());
-            dos.writeUTF(aContentList.getDescription());
         }
     }
 
