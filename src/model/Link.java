@@ -19,7 +19,7 @@ public class Link implements Serializable {
         Objects.requireNonNull(name, "Name mast not be null");
         this.name = name;
         if (url == null) {
-            this.url = "Empty field.";
+            this.url = "";
         } else {
             this.url = url;
         }

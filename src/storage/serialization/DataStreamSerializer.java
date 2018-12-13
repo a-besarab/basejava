@@ -8,6 +8,7 @@ import java.io.*;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -21,34 +22,32 @@ public class DataStreamSerializer implements Serialization {
 
             Map<ContactType, String> contacts = resume.getContacts();
             dos.writeInt(contacts.size());
-            for (Map.Entry<ContactType, String> entry : resume.getContacts().entrySet()) {
-                dos.writeUTF(entry.getKey().name());
-                dos.writeUTF(entry.getValue());
-            }
+
+            writeWithException(dos, contacts.entrySet(), writeInterface -> {
+                dos.writeUTF(writeInterface.getKey().name());
+                dos.writeUTF(writeInterface.getValue());
+            });
 
             Map<SectionType, AbstractSection> sections = resume.getSections();
             dos.writeInt(sections.size());
-            for (Map.Entry<SectionType, AbstractSection> entry : resume.getSections().entrySet()) {
-                SectionType type = entry.getKey();
+
+            writeWithException(dos, sections.entrySet(), writeInterface -> {
+                SectionType type = writeInterface.getKey();
+                dos.writeUTF(writeInterface.getKey().name());
                 switch (type) {
                     case OBJECTIVE:
                     case PERSONAL:
-                        writeSectionName(dos, entry.getKey().name());
-                        dos.writeUTF(entry.getValue().toString());
+                        dos.writeUTF(writeInterface.getValue().toString());
                         break;
                     case ACHIEVEMENT:
                     case QUALIFICATIONS:
-                        MarkSection markSection = (MarkSection) entry.getValue();
-                        writeSectionName(dos, entry.getKey().name());
+                        MarkSection markSection = (MarkSection) writeInterface.getValue();
                         dos.writeInt(markSection.getMarkList().size());
-                        for (String str : markSection.getMarkList()) {
-                            dos.writeUTF(str);
-                        }
+                        writeWithException(dos, markSection.getMarkList(), dos::writeUTF);
                         break;
                     case EXPERIENCE:
                     case EDUCATION:
-                        OrganizationSection organizationSection = (OrganizationSection) entry.getValue();
-                        writeSectionName(dos, entry.getKey().name());
+                        OrganizationSection organizationSection = (OrganizationSection) writeInterface.getValue();
                         dos.writeInt(organizationSection.getOrganization().size());
                         for (Organization organization : organizationSection.getOrganization()) {
                             dos.writeUTF(organization.getHomePage().getName());
@@ -58,12 +57,19 @@ public class DataStreamSerializer implements Serialization {
                         }
                         break;
                 }
-            }
+            });
         }
     }
 
-    private void writeSectionName(DataOutputStream dos, String name) throws IOException {
-        dos.writeUTF(name);
+    @FunctionalInterface
+    private interface WriteInterface<T> {
+        void write(T t) throws IOException;
+    }
+
+    private <T> void writeWithException(DataOutputStream dos, Collection<T> contacts, WriteInterface<T> writeInterface) throws IOException {
+        for (T item : contacts) {
+            writeInterface.write(item);
+        }
     }
 
     @Override
@@ -125,7 +131,6 @@ public class DataStreamSerializer implements Serialization {
         List<Organization.Content> contentList = new ArrayList<>();
         for (int i = 0; i < size; i++) {
             contentList.add(new Organization().new Content(readDate(dis), readDate(dis), dis.readUTF(), dis.readUTF()));
-
         }
         return contentList;
     }

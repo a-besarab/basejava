@@ -83,7 +83,7 @@ public class Organization implements Serializable {
             this.periodEnd = periodEnd;
             this.position = position;
             if (description == null) {
-                this.description = "Empty field.";
+                this.description = "";
             } else {
                 this.description = description;
             }
