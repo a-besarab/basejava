@@ -12,7 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public abstract class AbstractStorageTest {
-    protected static final File STORAGE_DIR = new File("C:\\basejava\\basejava\\storage");
+    protected static final File STORAGE_DIR = new File("/Users/a123/IdeaProjects/basejava2/storage");
     protected Storage storage;
 
     private static final String UUID_1 = "uuid1";

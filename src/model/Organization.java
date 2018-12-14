@@ -82,11 +82,7 @@ public class Organization implements Serializable {
             this.periodStart = periodStart;
             this.periodEnd = periodEnd;
             this.position = position;
-            if (description == null) {
-                this.description = "";
-            } else {
-                this.description = description;
-            }
+            this.description = description == null ? "" : description;
         }
 
         public Content(int yearStart, Month monthStart, int yearEnd, Month monthEnd, String position, String description) {

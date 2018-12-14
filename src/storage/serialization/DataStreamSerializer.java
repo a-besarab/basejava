@@ -19,33 +19,29 @@ public class DataStreamSerializer implements Serialization {
             dos.writeUTF(resume.getUuid());
             dos.writeUTF(resume.getFullName());
 
-            writeWithException(dos, resume.getContacts().entrySet(), writeInterface ->
-            {
-                dos.writeUTF(writeInterface.getKey().name());
-                dos.writeUTF(writeInterface.getValue());
+            writeWithException(dos, resume.getContacts().entrySet(), entry -> {
+                dos.writeUTF(entry.getKey().name());
+                dos.writeUTF(entry.getValue());
             });
 
-            writeWithException(dos, resume.getSections().entrySet(), writeInterface ->
-            {
-                SectionType type = writeInterface.getKey();
-                dos.writeUTF(writeInterface.getKey().name());
+            writeWithException(dos, resume.getSections().entrySet(), entry -> {
+                SectionType type = entry.getKey();
+                dos.writeUTF(entry.getKey().name());
                 switch (type) {
                     case OBJECTIVE:
                     case PERSONAL:
-                        dos.writeUTF(writeInterface.getValue().toString());
+                        dos.writeUTF(entry.getValue().toString());
                         break;
                     case ACHIEVEMENT:
                     case QUALIFICATIONS:
-                        writeWithException(dos, ((MarkSection) writeInterface.getValue()).getMarkList(), dos::writeUTF);
+                        writeWithException(dos, ((MarkSection) entry.getValue()).getMarkList(), dos::writeUTF);
                         break;
                     case EXPERIENCE:
                     case EDUCATION:
-                        writeWithException(dos, ((OrganizationSection) writeInterface.getValue()).getOrganization(), org ->
-                        {
+                        writeWithException(dos, ((OrganizationSection) entry.getValue()).getOrganization(), org -> {
                             dos.writeUTF(org.getHomePage().getName());
                             dos.writeUTF(org.getHomePage().getUrl());
-                            writeWithException(dos, org.getContent(), section ->
-                            {
+                            writeWithException(dos, org.getContent(), section -> {
                                 writeDate(dos, section.getPeriodStart());
                                 writeDate(dos, section.getPeriodEnd());
                                 dos.writeUTF(section.getPosition());
@@ -70,21 +66,39 @@ public class DataStreamSerializer implements Serialization {
         }
     }
 
+    @FunctionalInterface
+    private interface ReadInterface {
+        void read() throws IOException;
+    }
+
+    private void readWithException(DataInputStream dis, ReadInterface readInterface) throws IOException {
+        int size = dis.readInt();
+        for (int i = 0; i < size; i++) {
+            readInterface.read();
+        }
+    }
+
     @Override
     public Resume doRead(InputStream is) throws IOException {
         try (DataInputStream dis = new DataInputStream(is)) {
             Resume resume = new Resume(dis.readUTF(), dis.readUTF());
 
-            int sizeContact = dis.readInt();
-            for (int i = 0; i < sizeContact; i++) {
-                resume.setContact(ContactType.valueOf(dis.readUTF()), dis.readUTF());
-            }
+            readWithException(dis, () -> resume.setContact(ContactType.valueOf(dis.readUTF()), dis.readUTF()));
+//            int sizeContact = dis.readInt();
+//            for (int i = 0; i < sizeContact; i++) {
+//                resume.setContact(ContactType.valueOf(dis.readUTF()), dis.readUTF());
+//            }
 
-            int sizeSection = dis.readInt();
-            for (int i = 0; i < sizeSection; i++) {
+
+//            int sizeSection = dis.readInt();
+//            for (int i = 0; i < sizeSection; i++) {
+            readWithException(dis, () -> {
                 SectionType sectionType = SectionType.valueOf(dis.readUTF());
                 resume.setSection(sectionType, readSection(dis, sectionType));
-            }
+            });
+//                SectionType sectionType = SectionType.valueOf(dis.readUTF());
+//                resume.setSection(sectionType, readSection(dis, sectionType));
+//            }
             return resume;
         }
     }
