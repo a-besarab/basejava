@@ -66,6 +66,45 @@ public class DataStreamSerializer implements Serialization {
         }
     }
 
+    private void writeDate(DataOutputStream dos, LocalDate localdate) throws IOException {
+        dos.writeInt(localdate.getYear());
+        dos.writeInt(localdate.getMonth().getValue());
+    }
+
+    @Override
+    public Resume doRead(InputStream is) throws IOException {
+        try (DataInputStream dis = new DataInputStream(is)) {
+            Resume resume = new Resume(dis.readUTF(), dis.readUTF());
+
+            readWithException(dis, () -> resume.setContact(ContactType.valueOf(dis.readUTF()), dis.readUTF()));
+            readWithException(dis, () -> {
+                SectionType sectionType = SectionType.valueOf(dis.readUTF());
+                resume.setSection(sectionType, readSection(dis, sectionType));
+            });
+            return resume;
+        }
+    }
+
+    private AbstractSection readSection(DataInputStream dis, SectionType sectionType) throws IOException {
+        switch (sectionType) {
+            case OBJECTIVE:
+            case PERSONAL:
+                return new TextSection(dis.readUTF());
+            case ACHIEVEMENT:
+            case QUALIFICATIONS:
+                return new MarkSection(readListWithException(dis, dis::readUTF));
+            case EXPERIENCE:
+            case EDUCATION:
+                return new OrganizationSection(readListWithException(dis,
+                        () -> new Organization(new Link(dis.readUTF(), dis.readUTF()), readListWithException(dis, () ->
+                                new Organization().new Content(readDate(dis), readDate(dis), dis.readUTF(), dis.readUTF()
+                                ))
+                        )));
+            default:
+                throw new IllegalStateException();
+        }
+    }
+
     @FunctionalInterface
     private interface ReadInterface {
         void read() throws IOException;
@@ -78,69 +117,18 @@ public class DataStreamSerializer implements Serialization {
         }
     }
 
-    @Override
-    public Resume doRead(InputStream is) throws IOException {
-        try (DataInputStream dis = new DataInputStream(is)) {
-            Resume resume = new Resume(dis.readUTF(), dis.readUTF());
-
-            readWithException(dis, () -> resume.setContact(ContactType.valueOf(dis.readUTF()), dis.readUTF()));
-//            int sizeContact = dis.readInt();
-//            for (int i = 0; i < sizeContact; i++) {
-//                resume.setContact(ContactType.valueOf(dis.readUTF()), dis.readUTF());
-//            }
-
-
-//            int sizeSection = dis.readInt();
-//            for (int i = 0; i < sizeSection; i++) {
-            readWithException(dis, () -> {
-                SectionType sectionType = SectionType.valueOf(dis.readUTF());
-                resume.setSection(sectionType, readSection(dis, sectionType));
-            });
-//                SectionType sectionType = SectionType.valueOf(dis.readUTF());
-//                resume.setSection(sectionType, readSection(dis, sectionType));
-//            }
-            return resume;
-        }
+    @FunctionalInterface
+    private interface ReadListInterface<T> {
+        T read() throws IOException;
     }
 
-    private AbstractSection readSection(DataInputStream dis, SectionType sectionType) throws IOException {
-        switch (sectionType) {
-            case OBJECTIVE:
-            case PERSONAL:
-                return new TextSection(dis.readUTF());
-            case ACHIEVEMENT:
-            case QUALIFICATIONS:
-                int sizeMarkSection = dis.readInt();
-                List<String> markSection = new ArrayList<>();
-                for (int i = 0; i < sizeMarkSection; i++) {
-                    markSection.add(dis.readUTF());
-                }
-                return new MarkSection(markSection);
-            case EXPERIENCE:
-            case EDUCATION:
-                int sizeOrganizationSection = dis.readInt();
-                List<Organization> organizationSection = new ArrayList<>();
-                for (int i = 0; i < sizeOrganizationSection; i++) {
-                    organizationSection.add(new Organization(new Link(dis.readUTF(), dis.readUTF()), readContent(dis)));
-                }
-                return new OrganizationSection(organizationSection);
-            default:
-                throw new IllegalStateException();
-        }
-    }
-
-    private List<Organization.Content> readContent(DataInputStream dis) throws IOException {
+    private <T> List<T> readListWithException(DataInputStream dis, ReadListInterface<T> readList) throws IOException {
         int size = dis.readInt();
-        List<Organization.Content> contentList = new ArrayList<>();
+        List<T> list = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
-            contentList.add(new Organization().new Content(readDate(dis), readDate(dis), dis.readUTF(), dis.readUTF()));
+            list.add(readList.read());
         }
-        return contentList;
-    }
-
-    private void writeDate(DataOutputStream dos, LocalDate localdate) throws IOException {
-        dos.writeInt(localdate.getYear());
-        dos.writeInt(localdate.getMonth().getValue());
+        return list;
     }
 
     private LocalDate readDate(DataInputStream dis) throws IOException {
