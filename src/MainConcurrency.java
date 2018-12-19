@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainConcurrency implements Runnable {
+public class MainConcurrency {
     private static volatile int counter;
     private static final Object LOCK = new Object();
     private static final int THREAD_NUMBERS = 10000;
@@ -43,48 +43,28 @@ public class MainConcurrency implements Runnable {
         });
         System.out.println(counter);
 
-        Thread one = new Thread(new MainConcurrency());
-        Thread two = new Thread(new MainConcurrency());
-        one.start();
-        two.start();
-
+        doDeadLock(FIRST_OBJECT, SECOND_OBJECT);
+        doDeadLock(SECOND_OBJECT, FIRST_OBJECT);
     }
 
     private synchronized void inc() {
         counter++;
     }
 
-    @Override
-    public void run() {
-        doOne();
-        doTwo();
-    }
-
-    private void doOne() {
-        synchronized (SECOND_OBJECT) {
-            System.out.println("doOne, SECOND_OBJECT");
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+    private static void doDeadLock(Object FIRST_OBJECT, Object SECOND_OBJECT) {
+        new Thread(() -> {
             synchronized (FIRST_OBJECT) {
-                System.out.println("doOne, FIRST_OBJECT");
+                System.out.println("Block FIRST_OBJECT");
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("Waiting for SECOND_OBJECT");
+                synchronized (SECOND_OBJECT) {
+                    System.out.println("Block SECOND_OBJECT");
+                }
             }
-        }
-    }
-
-    private void doTwo() {
-        synchronized (FIRST_OBJECT) {
-            System.out.println("doTwo, FIRST_OBJECT");
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            synchronized (SECOND_OBJECT) {
-                System.out.println("doTwo, SECOND_OBJECT");
-            }
-        }
+        }).start();
     }
 }
