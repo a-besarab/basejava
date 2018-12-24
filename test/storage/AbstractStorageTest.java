@@ -1,18 +1,20 @@
 package storage;
 
+
 import exception.ExistStorageException;
 import exception.NotExistStorageException;
 import model.Resume;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import util.Config;
 
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
 public abstract class AbstractStorageTest {
-    protected static final File STORAGE_DIR = new File("/Users/a123/IdeaProjects/basejava2/storage");
+    protected static final File STORAGE_DIR = Config.get().getStorageDir();
     protected Storage storage;
 
     private static final String UUID_1 = "uuid1";
@@ -93,7 +95,7 @@ public abstract class AbstractStorageTest {
     @Test(expected = NotExistStorageException.class)
     public void delete() {
         storage.delete(UUID_1);
-        Assert.assertEquals(2,storage.size());
+        Assert.assertEquals(2, storage.size());
         storage.get(UUID_1);
     }
 
