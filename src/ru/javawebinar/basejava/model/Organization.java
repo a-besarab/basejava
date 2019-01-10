@@ -62,7 +62,7 @@ public class Organization implements Serializable {
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)
-    public class Content implements Serializable {
+    public static class Content implements Serializable {
         @XmlJavaTypeAdapter(LocalDateAdapter.class)
         private LocalDate periodStart;
         @XmlJavaTypeAdapter(LocalDateAdapter.class)

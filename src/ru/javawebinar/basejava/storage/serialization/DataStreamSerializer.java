@@ -97,7 +97,7 @@ public class DataStreamSerializer implements Serialization {
             case EDUCATION:
                 return new OrganizationSection(readListWithException(dis,
                         () -> new Organization(new Link(dis.readUTF(), dis.readUTF()), readListWithException(dis, () ->
-                                new Organization().new Content(readDate(dis), readDate(dis), dis.readUTF(), dis.readUTF()
+                                new Organization.Content(readDate(dis), readDate(dis), dis.readUTF(), dis.readUTF()
                                 ))
                         )));
             default:
