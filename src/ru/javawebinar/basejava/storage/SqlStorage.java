@@ -35,7 +35,7 @@ public class SqlStorage implements Storage {
                     try (PreparedStatement ps = conn.prepareStatement("INSERT INTO contact (resume_uuid, type, value) VALUES (?,?,?)")) {
                         for (Map.Entry<ContactType, String> e : resume.getContacts().entrySet()) {
                             ps.setString(1, resume.getUuid());
-                            ps.setString(2, e.getKey().getTitle());
+                            ps.setString(2, e.getKey().name());
                             ps.setString(3, e.getValue());
                             ps.addBatch();
                         }
@@ -47,7 +47,7 @@ public class SqlStorage implements Storage {
     }
 
     @Override
-    public void update(Resume resume) {
+    public void update(Resume resume) { //TODO!!
         sqlHelper.execute("UPDATE resume SET full_name = ? WHERE uuid = ?", ps -> {
             ps.setString(1, resume.getFullName());
             ps.setString(2, resume.getUuid());
@@ -61,7 +61,7 @@ public class SqlStorage implements Storage {
     @Override
     public Resume get(String uuid) {
         return sqlHelper.execute("SELECT * FROM resume r " +
-                "LEFT JOIN contact c" +
+                "LEFT JOIN contact c " +
                 "ON r.uuid = c.resume_uuid " +
                 "WHERE r.uuid =? ", ps -> {
             ps.setString(1, uuid);
@@ -80,7 +80,7 @@ public class SqlStorage implements Storage {
     }
 
     @Override
-    public void delete(String uuid) {
+    public void delete(String uuid) { //TODO!!
         sqlHelper.execute("DELETE FROM resume WHERE uuid = ?", ps -> {
             ps.setString(1, uuid);
             if (ps.executeUpdate() == 0) {
@@ -91,7 +91,7 @@ public class SqlStorage implements Storage {
     }
 
     @Override
-    public List<Resume> getAllSorted() {
+    public List<Resume> getAllSorted() { //TODO!!
         return sqlHelper.execute("SELECT * FROM resume ORDER BY full_name,uuid", ps -> {
             List<Resume> list = new ArrayList<>();
             ResultSet rs = ps.executeQuery();

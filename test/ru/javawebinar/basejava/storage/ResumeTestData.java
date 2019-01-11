@@ -1,5 +1,6 @@
 package ru.javawebinar.basejava.storage;
 
+import ru.javawebinar.basejava.model.ContactType;
 import ru.javawebinar.basejava.model.Resume;
 
 public class ResumeTestData {
@@ -12,13 +13,13 @@ public class ResumeTestData {
 
         Resume testResume = new Resume(uuid, name);
 
-//        testResume.setContact(ContactType.TEL, "123456789");
-//        testResume.setContact(ContactType.SKYPE, "SkYpe");
-//        testResume.setContact(ContactType.EMAIL, "@mail");
-//        testResume.setContact(ContactType.LINKEDIN, "linkId");
-//        testResume.setContact(ContactType.GITHUB, "gita");
-//        testResume.setContact(ContactType.STACKOVERFLOW, "StOver");
-//        testResume.setContact(ContactType.HOMEPAGE, "Home");
+        testResume.setContact(ContactType.TEL, "123456789");
+        testResume.setContact(ContactType.SKYPE, "SkYpe");
+        testResume.setContact(ContactType.EMAIL, "@mail");
+        testResume.setContact(ContactType.LINKEDIN, "linkId");
+        testResume.setContact(ContactType.GITHUB, "gita");
+        testResume.setContact(ContactType.STACKOVERFLOW, "StOver");
+        testResume.setContact(ContactType.HOMEPAGE, "Home");
 //        testResume.setSection(SectionType.OBJECTIVE, new TextSection("Objective1111"));
 //        testResume.setSection(SectionType.PERSONAL, new TextSection("Personal1111"));
 //        testResume.setSection(SectionType.ACHIEVEMENT, new MarkSection("Ach1", "Ach2", "Ach3"));
