@@ -9,6 +9,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -111,13 +112,26 @@ public class SqlStorage implements Storage {
 
     @Override
     public List<Resume> getAllSorted() { //TODO!!
-        return sqlHelper.execute("SELECT * FROM resume ORDER BY full_name,uuid", ps -> {
-            List<Resume> list = new ArrayList<>();
+        return sqlHelper.execute(" SELECT * FROM resume r " +
+                "LEFT JOIN contact c " +
+                "ON r.uuid = c.resume_uuid " +
+                "ORDER BY full_name, uuid ", ps -> {
+            Map<String, Resume> map = new LinkedHashMap<>();
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                list.add(new Resume(rs.getString("uuid"), rs.getString("full_name")));
+                String uuid = rs.getString("uuid");
+                Resume resume = map.get(uuid);
+                if (resume == null) {
+                    resume = new Resume(uuid, rs.getString("full_name"));
+                    map.put(uuid, resume);
+                }
+                String value = rs.getString("value");
+                if (value != null) {
+                    ContactType type = ContactType.valueOf(rs.getString("type"));
+                    resume.setContact(type, value);
+                }
             }
-            return list;
+            return new ArrayList<>(map.values());
         });
     }
 
