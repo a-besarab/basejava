@@ -1,7 +1,6 @@
 package ru.javawebinar.basejava.storage;
 
-import ru.javawebinar.basejava.model.ContactType;
-import ru.javawebinar.basejava.model.Resume;
+import ru.javawebinar.basejava.model.*;
 
 public class ResumeTestData {
     public static void main(String[] args) {
@@ -20,10 +19,10 @@ public class ResumeTestData {
         testResume.setContact(ContactType.GITHUB, "gita");
         testResume.setContact(ContactType.STACKOVERFLOW, "StOver");
         testResume.setContact(ContactType.HOMEPAGE, "Home");
-//        testResume.setSection(SectionType.OBJECTIVE, new TextSection("Objective1111"));
-//        testResume.setSection(SectionType.PERSONAL, new TextSection("Personal1111"));
-//        testResume.setSection(SectionType.ACHIEVEMENT, new MarkSection("Ach1", "Ach2", "Ach3"));
-//        testResume.setSection(SectionType.QUALIFICATIONS, new MarkSection("Qual1", "Qual2", "Qual3"));
+        testResume.setSection(SectionType.OBJECTIVE, new TextSection("Objective1111"));
+        testResume.setSection(SectionType.PERSONAL, new TextSection("Personal1111"));
+        testResume.setSection(SectionType.ACHIEVEMENT, new MarkSection("Ach1", "Ach2", "Ach3"));
+        testResume.setSection(SectionType.QUALIFICATIONS, new MarkSection("Qual1", "Qual2", "Qual3"));
 //        testResume.setSection(SectionType.EXPERIENCE, new OrganizationSection(
 //                new Organization("OOO", "url1",
 //                        new Organization().new Content(1999, Month.AUGUST, 2002, Month.AUGUST, "position1", "Description1"),
