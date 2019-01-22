@@ -6,6 +6,7 @@ import ru.javawebinar.basejava.sql.SqlHelper;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -167,10 +168,21 @@ public class SqlStorage implements Storage {
             for (Map.Entry<SectionType, AbstractSection> e : resume.getSections().entrySet()) {
                 ps.setString(1, resume.getUuid());
                 ps.setString(2, e.getKey().name());
-                ps.setString(3, e.getValue().toString());
-                ps.addBatch();//TODO save MarkSection
+                if (e.getKey().name().equals("OBJECTIVE") | e.getKey().name().equals("PERSONAL")) {
+                    ps.setString(3, e.getValue().toString());
+                }
+                if (e.getKey().name().equals("ACHIEVEMENT") | e.getKey().name().equals("QUALIFICATIONS")) {
+                    AbstractSection abstractSection = e.getValue();
+                    List<String> list = ((MarkSection) abstractSection).getMarkList();
+                    StringBuilder sb = new StringBuilder();
+                    for (String s : list) {
+                        sb.append(s + "\n");
+                    }
+                    ps.setString(3, sb.toString());
+                }
+                ps.addBatch();
+                ps.executeBatch();
             }
-            ps.executeBatch();
         }
     }
 
@@ -182,13 +194,14 @@ public class SqlStorage implements Storage {
     }
 
     private void addSection(ResultSet rs, Resume resume) throws SQLException {
-        String value = rs.getString("value");
+           String value = rs.getString("value");
         if (value != null) {
             if (rs.getString("type").equals("OBJECTIVE") | rs.getString("type").equals("PERSONAL")) {
                 resume.setSection(SectionType.valueOf(rs.getString("type")), new TextSection(value));
             }
             if (rs.getString("type").equals("ACHIEVEMENT") | rs.getString("type").equals("QUALIFICATIONS")) {
-                resume.setSection(SectionType.valueOf(rs.getString("type")), new MarkSection(value));//TODO list<string>
+                List<String> list = Arrays.asList(value.split("\n"));
+                resume.setSection(SectionType.valueOf(rs.getString("type")), new MarkSection(list));
             }
         }
     }
