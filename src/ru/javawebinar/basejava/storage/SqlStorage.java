@@ -5,10 +5,7 @@ import ru.javawebinar.basejava.model.*;
 import ru.javawebinar.basejava.sql.SqlHelper;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class SqlStorage implements Storage {
     private final SqlHelper sqlHelper;
@@ -105,37 +102,29 @@ public class SqlStorage implements Storage {
 
     @Override
     public List<Resume> getAllSorted() {
-        List<Resume> list = new ArrayList<>();
+        Map<String, Resume> map = new LinkedHashMap<>();
         return sqlHelper.transactionalExecute(conn -> {
             try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM resume ORDER BY full_name, uuid")) {
                 ResultSet rs = ps.executeQuery();
                 while (rs.next()) {
-                    list.add(new Resume(rs.getString("uuid"), rs.getString("full_name")));
+                    map.put(rs.getString("uuid"), new Resume(rs.getString("uuid"), rs.getString("full_name")));
                 }
             }
             try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM contact")) {
                 ResultSet rs = ps.executeQuery();
                 while (rs.next()) {
-                    String s = rs.getString("resume_uuid");
-                    for (Resume r : list) {
-                        if (r.getUuid().equals(s)) {
-                            addContact(rs, r);
-                        }
-                    }
+                    Resume resume = map.get(rs.getString("resume_uuid"));
+                    addContact(rs, resume);
                 }
             }
             try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM section")) {
                 ResultSet rs = ps.executeQuery();
                 while (rs.next()) {
-                    String s = rs.getString("resume_uuid");
-                    for (Resume r : list) {
-                        if (r.getUuid().equals(s)) {
-                            addSection(rs, r);
-                        }
-                    }
+                    Resume resume = map.get(rs.getString("resume_uuid"));
+                    addSection(rs, resume);
                 }
             }
-            return list;
+            return new ArrayList<>(map.values());
         });
     }
 
@@ -168,17 +157,17 @@ public class SqlStorage implements Storage {
             for (Map.Entry<SectionType, AbstractSection> e : resume.getSections().entrySet()) {
                 ps.setString(1, resume.getUuid());
                 ps.setString(2, e.getKey().name());
-                if (e.getKey().name().equals("OBJECTIVE") | e.getKey().name().equals("PERSONAL")) {
-                    ps.setString(3, e.getValue().toString());
-                }
-                if (e.getKey().name().equals("ACHIEVEMENT") | e.getKey().name().equals("QUALIFICATIONS")) {
-                    AbstractSection abstractSection = e.getValue();
-                    List<String> list = ((MarkSection) abstractSection).getMarkList();
-                    StringBuilder sb = new StringBuilder();
-                    for (String s : list) {
-                        sb.append(s + "\n");
-                    }
-                    ps.setString(3, sb.toString());
+                switch (e.getKey().name()) {
+                    case ("OBJECTIVE"):
+                    case ("PERSONAL"):
+                        ps.setString(3, e.getValue().toString());
+                        break;
+                    case ("ACHIEVEMENT"):
+                    case ("QUALIFICATIONS"):
+                        AbstractSection abstractSection = e.getValue();
+                        List<String> list = ((MarkSection) abstractSection).getMarkList();
+                        ps.setString(3, String.join("\n", list));
+                        break;
                 }
                 ps.addBatch();
                 ps.executeBatch();
@@ -194,15 +183,21 @@ public class SqlStorage implements Storage {
     }
 
     private void addSection(ResultSet rs, Resume resume) throws SQLException {
-           String value = rs.getString("value");
+        String value = rs.getString("value");
         if (value != null) {
-            if (rs.getString("type").equals("OBJECTIVE") | rs.getString("type").equals("PERSONAL")) {
-                resume.setSection(SectionType.valueOf(rs.getString("type")), new TextSection(value));
+            AbstractSection section = null;
+            switch (rs.getString("type")) {
+                case ("OBJECTIVE"):
+                case ("PERSONAL"):
+                    section = new TextSection(value);
+                    break;
+                case ("ACHIEVEMENT"):
+                case ("QUALIFICATIONS"):
+                    List<String> list = Arrays.asList(value.split("\n"));
+                    section = new MarkSection(list);
+                    break;
             }
-            if (rs.getString("type").equals("ACHIEVEMENT") | rs.getString("type").equals("QUALIFICATIONS")) {
-                List<String> list = Arrays.asList(value.split("\n"));
-                resume.setSection(SectionType.valueOf(rs.getString("type")), new MarkSection(list));
-            }
+            resume.setSection(SectionType.valueOf(rs.getString("type")), section);
         }
     }
 }
