@@ -1,19 +1,17 @@
 package ru.javawebinar.basejava.web;
 
+import ru.javawebinar.basejava.Config;
 import ru.javawebinar.basejava.model.Resume;
-import ru.javawebinar.basejava.storage.SqlStorage;
 import ru.javawebinar.basejava.storage.Storage;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
-import java.util.Objects;
+import java.io.Writer;
 
 public class ResumeServlet extends HttpServlet {
-    private Storage storage = new SqlStorage("", "", "");
-    private List<Resume> list = Objects.requireNonNull(storage).getAllSorted();
+    private Storage storage = Config.get().getStorage();
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws javax.servlet.ServletException, IOException {
 
@@ -23,9 +21,8 @@ public class ResumeServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
         response.setContentType("text/html; charset=UTF-8");
-        String uuid = request.getParameter("uuid");
-
-        response.getWriter().write(
+        Writer writer = response.getWriter();
+        writer.write(
                 "<!DOCTYPE html>\n" +
                         "<html lang=\"en\">\n" +
                         "<head>\n" +
@@ -43,8 +40,8 @@ public class ResumeServlet extends HttpServlet {
                         "            Full Name\n" +
                         "        </td>\n" +
                         "    </tr>\n");
-        for (Resume resume : list) {
-            response.getWriter().write("    <tr>\n" +
+        for (Resume resume : storage.getAllSorted()) {
+            writer.write("    <tr>\n" +
                     "        <td>\n" +
                     resume.getUuid() +
                     "        </td>\n" +
@@ -53,8 +50,8 @@ public class ResumeServlet extends HttpServlet {
                     "        </td>\n" +
                     "    </tr>\n");
         }
-        response.getWriter().write("</table>\n" +
-                "</body>\n" +
-                "</html>");
+        writer.write("</table>\n" +
+                        "</body>\n" +
+                        "</html>");
     }
 }

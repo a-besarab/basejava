@@ -32,5 +32,8 @@ create table if not exists section
       on update restrict on delete cascade
 );
 
+create unique index section_uuid_type_index
+  on section (resume_uuid, type);
+
 create unique index contact_uuid_type_index
   on contact (resume_uuid, type);
