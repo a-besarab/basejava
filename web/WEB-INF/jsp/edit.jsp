@@ -1,7 +1,4 @@
-<%@ page import="ru.javawebinar.basejava.model.ContactType" %>
-<%@ page import="ru.javawebinar.basejava.model.MarkSection" %>
-<%@ page import="ru.javawebinar.basejava.model.SectionType" %>
-<%@ page import="ru.javawebinar.basejava.model.TextSection" %>
+<%@ page import="ru.javawebinar.basejava.model.*" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
@@ -17,57 +14,65 @@
     <form method="post" action="resume" enctype="application/x-www-form-urlencoded">
         <input type="hidden" name="uuid" value="${resume.uuid}">
         <dl>
-        <dt>
-            Имя:
-        </dt>
-        <dd>
-            <input type="text" name="fullName" size="50" value="${resume.fullName}">
-        </dd>
-    </dl>
-        <h3>Контакты:</h3>
-
-            <c:forEach var="type" items="<%=ContactType.values()%>">
-        <dl>
             <dt>
-                    ${type.title}
+                Имя:
             </dt>
             <dd>
-                <input type="text" name="${type.name()}" size="30" value="${resume.getContact(type)}">
+                <input type="text" name="fullName" size="50" value="${resume.fullName}">
             </dd>
         </dl>
+        <h3>Контакты:</h3>
+
+        <c:forEach var="type" items="<%=ContactType.values()%>">
+            <dl>
+                <dt>
+                        ${type.title}
+                </dt>
+                <dd>
+                    <input type="text" name="${type.name()}" size="30" value="${resume.getContact(type)}">
+                </dd>
+            </dl>
         </c:forEach>
         <h3>Секции:</h3>
 
-        <c:forEach var="type" items="<%=SectionType.values()%>">
-            <c:set var="section" value="${resume.getSection(type)}"/>
+
+        <%--<c:forEach var="sectionEntry" items="${resume.sections}">--%>
+
+            <%--<c:set var="type" value="${sectionEntry.key}"/>--%>
+            <%--<c:set var="section" value="${resume.getSection(type)}"/>--%>
+            <%--&lt;%&ndash;<jsp:useBean id="type" type="ru.javawebinar.basejava.model.SectionType"/>&ndash;%&gt;--%>
             <%--<jsp:useBean id="section" type="ru.javawebinar.basejava.model.AbstractSection"/>--%>
+
+
+            <c:forEach var="type" items="<%=SectionType.values()%>">
+            <c:set var="section" value="${resume.getSection(type)}"/>
+            <jsp:useBean id="section" type="ru.javawebinar.basejava.model.AbstractSection" scope="session"/>
+
             <c:choose>
-            <c:when test="${type == 'OBJECTIVE' || type =='PERSONAL'}">
-                <dl>
-                    <dt>
-                            ${type.title}
-                    </dt>
-                    <dd>
-                        <input type="text" name="${type.name()}" size="30" value="${resume.getSection(type)}">
-                    </dd>
-                </dl>
-            </c:when>
-            <c:when test="${type == 'ACHIEVEMENT' || type == 'QUALIFICATIONS'}">
-                <dl>
-                    <dt>
-                            ${type.title}
-                    </dt>
-                    <dd>
-                        <%--<textarea name='${type}' cols=75--%>
-                        <%--rows=5><%=String.join("\n", ((MarkSection) section).getMarkList())%></textarea>--%>
-                    </dd>
-                </dl>
-            </c:when>
-        </c:choose>
+                <c:when test="${type == 'OBJECTIVE' || type =='PERSONAL'}">
+                    <dl>
+                        <dt>
+                                ${type.title}
+                        </dt>
+                        <dd>
+                            <input type="text" name="${type.name()}" size="30" value="${resume.getSection(type)}">
+                        </dd>
+                    </dl>
+                </c:when>
+                <c:when test="${type == 'ACHIEVEMENT' || type == 'QUALIFICATIONS'}">
+                    <dl>
+                        <dt>
+                                ${type.title}
+                        </dt>
+                        <dd>
+                        <textarea name='${type}' cols=75 rows=5>
+                                    <%=String.join("\n", ((MarkSection) section).getMarkList())%>
+                        </textarea>
+                        </dd>
+                    </dl>
+                </c:when>
+            </c:choose>
         </c:forEach>
-
-
-
         <hr>
         <button type="submit">Сохранить</button>
         <button onclick="window.history.back()">Отменить</button>

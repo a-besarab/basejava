@@ -34,7 +34,23 @@ public class ResumeServlet extends HttpServlet {
                 resume.getContacts().remove(type);
             }
         }
-
+        for (SectionType type : SectionType.values()) {
+            String value = request.getParameter(type.name());
+            if (value != null && value.trim().length() != 0) {
+                switch (type) {
+                    case OBJECTIVE:
+                    case PERSONAL:
+                        resume.setSection(type, new TextSection(value));
+                        break;
+                    case ACHIEVEMENT:
+                    case QUALIFICATIONS:
+                        resume.setSection(type, new MarkSection(value.trim().split("\\n")));
+                        break;
+                }
+            } else {
+                resume.getSections().remove(type);
+            }
+        }
         storage.update(resume);
         response.sendRedirect("resume");
     }
