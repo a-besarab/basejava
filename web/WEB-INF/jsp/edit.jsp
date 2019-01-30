@@ -35,19 +35,9 @@
         </c:forEach>
         <h3>Секции:</h3>
 
-
-        <%--<c:forEach var="sectionEntry" items="${resume.sections}">--%>
-
-            <%--<c:set var="type" value="${sectionEntry.key}"/>--%>
-            <%--<c:set var="section" value="${resume.getSection(type)}"/>--%>
-            <%--&lt;%&ndash;<jsp:useBean id="type" type="ru.javawebinar.basejava.model.SectionType"/>&ndash;%&gt;--%>
-            <%--<jsp:useBean id="section" type="ru.javawebinar.basejava.model.AbstractSection"/>--%>
-
-
-            <c:forEach var="type" items="<%=SectionType.values()%>">
+        <c:forEach var="type" items="<%=SectionType.values()%>">
             <c:set var="section" value="${resume.getSection(type)}"/>
-            <jsp:useBean id="section" type="ru.javawebinar.basejava.model.AbstractSection" scope="session"/>
-
+            <jsp:useBean id="section" type="ru.javawebinar.basejava.model.AbstractSection"/>
             <c:choose>
                 <c:when test="${type == 'OBJECTIVE' || type =='PERSONAL'}">
                     <dl>
@@ -65,9 +55,7 @@
                                 ${type.title}
                         </dt>
                         <dd>
-                        <textarea name='${type}' cols=75 rows=5>
-                                    <%=String.join("\n", ((MarkSection) section).getMarkList())%>
-                        </textarea>
+                        <textarea name='${type}' cols=75 rows=5><%=String.join("\n", ((MarkSection) section).getMarkList())%></textarea>
                         </dd>
                     </dl>
                 </c:when>

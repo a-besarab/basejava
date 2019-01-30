@@ -36,19 +36,19 @@ public class DataStreamSerializer implements Serialization {
                     case QUALIFICATIONS:
                         writeWithException(dos, ((MarkSection) entry.getValue()).getMarkList(), dos::writeUTF);
                         break;
-                    case EXPERIENCE:
-                    case EDUCATION:
-                        writeWithException(dos, ((OrganizationSection) entry.getValue()).getOrganization(), org -> {
-                            dos.writeUTF(org.getHomePage().getName());
-                            dos.writeUTF(org.getHomePage().getUrl());
-                            writeWithException(dos, org.getContent(), section -> {
-                                writeDate(dos, section.getPeriodStart());
-                                writeDate(dos, section.getPeriodEnd());
-                                dos.writeUTF(section.getPosition());
-                                dos.writeUTF(section.getDescription());
-                            });
-                        });
-                        break;
+//                    case EXPERIENCE:
+//                    case EDUCATION:
+//                        writeWithException(dos, ((OrganizationSection) entry.getValue()).getOrganization(), org -> {
+//                            dos.writeUTF(org.getHomePage().getName());
+//                            dos.writeUTF(org.getHomePage().getUrl());
+//                            writeWithException(dos, org.getContent(), section -> {
+//                                writeDate(dos, section.getPeriodStart());
+//                                writeDate(dos, section.getPeriodEnd());
+//                                dos.writeUTF(section.getPosition());
+//                                dos.writeUTF(section.getDescription());
+//                            });
+//                        });
+//                        break;
                 }
             });
         }
@@ -93,13 +93,13 @@ public class DataStreamSerializer implements Serialization {
             case ACHIEVEMENT:
             case QUALIFICATIONS:
                 return new MarkSection(readListWithException(dis, dis::readUTF));
-            case EXPERIENCE:
-            case EDUCATION:
-                return new OrganizationSection(readListWithException(dis,
-                        () -> new Organization(new Link(dis.readUTF(), dis.readUTF()), readListWithException(dis, () ->
-                                new Organization.Content(readDate(dis), readDate(dis), dis.readUTF(), dis.readUTF()
-                                ))
-                        )));
+//            case EXPERIENCE:
+//            case EDUCATION:
+//                return new OrganizationSection(readListWithException(dis,
+//                        () -> new Organization(new Link(dis.readUTF(), dis.readUTF()), readListWithException(dis, () ->
+//                                new Organization.Content(readDate(dis), readDate(dis), dis.readUTF(), dis.readUTF()
+//                                ))
+//                        )));
             default:
                 throw new IllegalStateException();
         }

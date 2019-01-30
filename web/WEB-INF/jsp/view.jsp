@@ -30,8 +30,8 @@
             <jsp:useBean id="section" type="ru.javawebinar.basejava.model.AbstractSection"/>
             <c:choose>
                 <c:when test="${type == 'OBJECTIVE' || type =='PERSONAL'}">
-                    ${type.title}
-                    <%=((TextSection) section).getText()%>
+                        ${type.title}
+                        <%=((TextSection) section).getText()%>
                 </c:when>
                 <c:when test="${type == 'ACHIEVEMENT' || type == 'QUALIFICATIONS'}">
                     ${type.title}

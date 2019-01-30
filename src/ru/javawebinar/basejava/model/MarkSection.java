@@ -8,6 +8,7 @@ public class MarkSection extends AbstractSection {
     private static final long serialVersionUID =1L;
 
     private List<String> markList;
+    public static final MarkSection EMPTY = new MarkSection("");
 
     public MarkSection() {
     }

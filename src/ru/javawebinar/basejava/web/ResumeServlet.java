@@ -44,7 +44,7 @@ public class ResumeServlet extends HttpServlet {
                         break;
                     case ACHIEVEMENT:
                     case QUALIFICATIONS:
-                        resume.setSection(type, new MarkSection(value.trim().split("\\n")));
+                        resume.setSection(type, new MarkSection(value.trim().split("\n")));
                         break;
                 }
             } else {
@@ -73,6 +73,24 @@ public class ResumeServlet extends HttpServlet {
             case "view":
             case "edit":
                 resume = storage.get(uuid);
+                for (SectionType type : SectionType.values()) {
+                    AbstractSection section = resume.getSection(type);
+                    switch (type) {
+                        case OBJECTIVE:
+                        case PERSONAL:
+                            if (section == null) {
+                                section =TextSection.EMPTY;
+                            }
+                            break;
+                        case ACHIEVEMENT:
+                        case QUALIFICATIONS:
+                            if (section == null) {
+                                section = MarkSection.EMPTY;
+                            }
+                            break;
+                    }
+                    resume.setSection(type, section);
+                }
                 break;
             default:
                 throw new IllegalArgumentException("Action " + action + " is illegal");
@@ -80,42 +98,5 @@ public class ResumeServlet extends HttpServlet {
         request.setAttribute("resume", resume);
         request.getRequestDispatcher(
                 ("view".equals(action) ? "/WEB-INF/jsp/view.jsp" : "/WEB-INF/jsp/edit.jsp")).forward(request, response);
-
-
-//        request.setCharacterEncoding("UTF-8");
-//        response.setCharacterEncoding("UTF-8");
-//        response.setContentType("text/html; charset=UTF-8");
-//        Writer writer = response.getWriter();
-//        writer.write(
-//                "<!DOCTYPE html>\n" +
-//                        "<html lang=\"en\">\n" +
-//                        "<head>\n" +
-//                        "    <meta charset=\"UTF-8\">\n" +
-//                        "    <link rel=\"stylesheet\" href=\"css/style.css\">\n" +
-//                        "    <title>Resume</title>\n" +
-//                        "</head>\n" +
-//                        "<body>\n" +
-//                        "<table border=\"1\">\n" +
-//                        "    <tr>\n" +
-//                        "        <td>\n" +
-//                        "            Uuid\n" +
-//                        "        </td>\n" +
-//                        "        <td>\n" +
-//                        "            Full Name\n" +
-//                        "        </td>\n" +
-//                        "    </tr>\n");
-//        for (Resume resume : storage.getAllSorted()) {
-//            writer.write("    <tr>\n" +
-//                    "        <td>\n" +
-//                    resume.getUuid() +
-//                    "        </td>\n" +
-//                    "        <td>\n" +
-//                    resume.getFullName() +
-//                    "        </td>\n" +
-//                    "    </tr>\n");
-//        }
-//        writer.write("</table>\n" +
-//                        "</body>\n" +
-//                        "</html>");
     }
 }
