@@ -28,7 +28,7 @@ public abstract class AbstractStorageTest {
     private static final String NAME_3 = "name3";
     private static final String NAME_4 = "name4";
 
-    private static final Resume RESUME_1;
+    public static final Resume RESUME_1;
     private static final Resume RESUME_2;
     private static final Resume RESUME_3;
     private static final Resume RESUME_4;
