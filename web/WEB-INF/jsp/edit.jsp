@@ -59,6 +59,9 @@
                         </dd>
                     </dl>
                 </c:when>
+                <c:when test="${type == 'EXPERIENCE' || type == 'EDUCATION'}">
+
+                </c:when>
             </c:choose>
         </c:forEach>
         <hr>

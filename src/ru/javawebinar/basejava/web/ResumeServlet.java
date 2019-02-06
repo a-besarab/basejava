@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ResumeServlet extends HttpServlet {
     private Storage storage = Config.get().getStorage();
@@ -24,8 +26,14 @@ public class ResumeServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         String uuid = request.getParameter("uuid");
         String fullName = request.getParameter("fullName");
-        Resume resume = storage.get(uuid);
-        resume.setFullName(fullName);
+        final boolean isExist = (uuid == null || uuid.length() == 0);
+        Resume resume;
+        if (isExist) {
+            resume = new Resume(fullName);
+        } else {
+            resume = storage.get(uuid);
+            resume.setFullName(fullName);
+        }
         for (ContactType type : ContactType.values()) {
             String value = request.getParameter(type.name());
             if (value != null && value.trim().length() != 0) {
@@ -51,7 +59,11 @@ public class ResumeServlet extends HttpServlet {
                 resume.getSections().remove(type);
             }
         }
-        storage.update(resume);
+        if (isExist) {
+            storage.save(resume);
+        } else {
+            storage.update(resume);
+        }
         response.sendRedirect("resume");
     }
 
@@ -71,6 +83,11 @@ public class ResumeServlet extends HttpServlet {
                 response.sendRedirect("resume");
                 return;
             case "view":
+                resume = storage.get(uuid);
+                break;
+            case "add":
+                resume = Resume.EMPTY;
+                break;
             case "edit":
                 resume = storage.get(uuid);
                 for (SectionType type : SectionType.values()) {
@@ -79,7 +96,7 @@ public class ResumeServlet extends HttpServlet {
                         case OBJECTIVE:
                         case PERSONAL:
                             if (section == null) {
-                                section =TextSection.EMPTY;
+                                section = TextSection.EMPTY;
                             }
                             break;
                         case ACHIEVEMENT:
@@ -87,6 +104,21 @@ public class ResumeServlet extends HttpServlet {
                             if (section == null) {
                                 section = MarkSection.EMPTY;
                             }
+                            break;
+                        case EDUCATION:
+                        case EXPERIENCE:
+                            OrganizationSection orgSection = (OrganizationSection) section;
+                            List<Organization> emptyFirstOrganizations = new ArrayList<>();
+                            emptyFirstOrganizations.add(Organization.EMPTY);
+                            if (orgSection != null) {
+                                for (Organization org : orgSection.getOrganization()) {
+                                    List<Organization.Content> emptyFirstPosition = new ArrayList<>();
+                                    emptyFirstPosition.add(Organization.Content.EMPTY);
+                                    emptyFirstPosition.addAll(org.getContent());
+                                    emptyFirstOrganizations.add(new Organization(org.getHomePage(), emptyFirstPosition));
+                                }
+                            }
+                            section = new OrganizationSection(emptyFirstOrganizations);
                             break;
                     }
                     resume.setSection(type, section);
