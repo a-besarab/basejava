@@ -22,7 +22,7 @@
         </c:forEach>
     </p>
     <p>
-    <table border="1">
+    <table>
         <c:forEach var="sectionEntry" items="${resume.sections}">
             <jsp:useBean id="sectionEntry"
                          type="java.util.Map.Entry<ru.javawebinar.basejava.model.SectionType, ru.javawebinar.basejava.model.AbstractSection>"/>
@@ -32,7 +32,7 @@
             <c:choose>
                 <c:when test="${type == 'OBJECTIVE' || type =='PERSONAL'}">
                     <tr>
-                        <td valign="top" width="200">${type.title}<br>&nbsp;
+                        <td valign="top">${type.title}<br>&nbsp;
                         </td>
                         <td valign="top"><%=((TextSection) section).getText()%>
                         </td>

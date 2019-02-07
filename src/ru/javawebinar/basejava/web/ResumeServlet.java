@@ -44,6 +44,7 @@ public class ResumeServlet extends HttpServlet {
         }
         for (SectionType type : SectionType.values()) {
             String value = request.getParameter(type.name());
+            String[] values = request.getParameterValues(type.name());
             if (value != null && value.trim().length() != 0) {
                 switch (type) {
                     case OBJECTIVE:
@@ -53,6 +54,12 @@ public class ResumeServlet extends HttpServlet {
                     case ACHIEVEMENT:
                     case QUALIFICATIONS:
                         resume.setSection(type, new MarkSection(value.trim().split("\n")));
+                        break;
+                    case EXPERIENCE:
+                    case EDUCATION:
+                        List<Organization> list = new ArrayList<>();
+
+
                         break;
                 }
             } else {
@@ -107,18 +114,20 @@ public class ResumeServlet extends HttpServlet {
                             break;
                         case EDUCATION:
                         case EXPERIENCE:
-                            OrganizationSection orgSection = (OrganizationSection) section;
-                            List<Organization> emptyFirstOrganizations = new ArrayList<>();
-                            emptyFirstOrganizations.add(Organization.EMPTY);
-                            if (orgSection != null) {
-                                for (Organization org : orgSection.getOrganization()) {
-                                    List<Organization.Content> emptyFirstPosition = new ArrayList<>();
-                                    emptyFirstPosition.add(Organization.Content.EMPTY);
-                                    emptyFirstPosition.addAll(org.getContent());
-                                    emptyFirstOrganizations.add(new Organization(org.getHomePage(), emptyFirstPosition));
+                            if (resume.getSections().get(type) == null) {
+                                OrganizationSection orgSection = (OrganizationSection) section;
+                                List<Organization> emptyFirstOrganizations = new ArrayList<>();
+                                emptyFirstOrganizations.add(Organization.EMPTY);
+                                if (orgSection != null) {
+                                    for (Organization org : orgSection.getOrganization()) {
+                                        List<Organization.Content> emptyFirstPosition = new ArrayList<>();
+                                        emptyFirstPosition.add(Organization.Content.EMPTY);
+                                        emptyFirstPosition.addAll(org.getContent());
+                                        emptyFirstOrganizations.add(new Organization(org.getHomePage(), emptyFirstPosition));
+                                    }
                                 }
+                                section = new OrganizationSection(emptyFirstOrganizations);
                             }
-                            section = new OrganizationSection(emptyFirstOrganizations);
                             break;
                     }
                     resume.setSection(type, section);
