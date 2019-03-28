@@ -30,8 +30,8 @@ public class Resume implements Comparable<Resume>, Serializable {
     // Unique identifier
     private String uuid;
     private String fullName;
-    private Map<ContactType, String> contact = new EnumMap<>(ContactType.class);
-    private Map<SectionType, AbstractSection> section = new EnumMap<>(SectionType.class);
+    private final Map<ContactType, String> contact = new EnumMap<>(ContactType.class);
+    private final Map<SectionType, AbstractSection> section = new EnumMap<>(SectionType.class);
 
 
     public Resume() {

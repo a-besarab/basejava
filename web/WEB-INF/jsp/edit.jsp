@@ -65,13 +65,14 @@
                     </dl>
                 </c:when>
                 <c:when test="${type == 'EXPERIENCE' || type == 'EDUCATION'}">
-                    <c:forEach var="org" items="<%=((OrganizationSection)section).getOrganization()%>">
+                    <c:forEach var="org" items="<%=((OrganizationSection)section).getOrganization()%>"
+                               varStatus="counter">
                         <dl>
                             <dt>
                                 Название организации:
                             </dt>
                             <dd>
-                                <input type="text" name="${type.title}" size="30" value="${org.homePage.name}">
+                                <input type="text" name="${type}" size="30" value="${org.homePage.name}">
                             </dd>
                         </dl>
                         <dl>
@@ -89,8 +90,8 @@
                                     Месяц год начала:
                                 </dt>
                                 <dd>
-                                    <input type="text" name="${type}${counter.index}startDate" size=30
-                                           value="<%=pos.getPeriodStart()%>" placeholder="MM/yyyy">
+                                    <input type="text" name="${type}${counter.index}periodStart" size=30
+                                           value="<%=DateUtil.format(pos.getPeriodStart())%>" placeholder="MM/yyyy">
                                 </dd>
                             </dl>
                             <dl>
@@ -98,8 +99,8 @@
                                     Месяц год окончанпие:
                                 </dt>
                                 <dd>
-                                    <input type="text" name="${type}${counter.index}endDate" size=30
-                                           value="<%=pos.getPeriodEnd()%>" placeholder="MM/yyyy">
+                                    <input type="text" name="${type}${counter.index}periodEnd" size=30
+                                           value="<%=DateUtil.format(pos.getPeriodEnd())%>" placeholder="MM/yyyy">
                                 </dd>
                             </dl>
                             <dl>
@@ -107,7 +108,8 @@
                                     Должность:
                                 </dt>
                                 <dd>
-                                    <input type="text" name="${type.name()}" size="30" value="${pos.position}">
+                                    <input type="text" name="${type}${counter.index}position" size="30"
+                                           value="${pos.position}">
                                 </dd>
                             </dl>
                             <dl>
@@ -115,7 +117,8 @@
                                     Описание:
                                 </dt>
                                 <dd>
-                                      <textarea name='${type}' cols=75 rows=5>${pos.description}</textarea>
+                                    <textarea name='${type}${counter.index}description' cols=75
+                                              rows=5>${pos.description}</textarea>
                                 </dd>
                             </dl>
                         </c:forEach>
@@ -126,7 +129,8 @@
         </c:forEach>
         <hr>
         <button type="submit">Сохранить</button>
-        <button onclick="window.history.back()">Отменить</button>
+        <input onclick="window.history.go(-1); return false;" type="button" value="Отменить"/>
+        <%--<button onclick="window.history.back()">Отменить</button>--%>
     </form>
 </section>
 <jsp:include page="fragments/footer.jsp"/>

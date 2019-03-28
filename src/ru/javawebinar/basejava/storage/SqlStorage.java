@@ -1,12 +1,18 @@
 package ru.javawebinar.basejava.storage;
 
 import ru.javawebinar.basejava.exception.NotExistStorageException;
-import ru.javawebinar.basejava.model.*;
+import ru.javawebinar.basejava.model.AbstractSection;
+import ru.javawebinar.basejava.model.ContactType;
+import ru.javawebinar.basejava.model.Resume;
+import ru.javawebinar.basejava.model.SectionType;
 import ru.javawebinar.basejava.sql.SqlHelper;
 import ru.javawebinar.basejava.util.JsonParser;
 
 import java.sql.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 public class SqlStorage implements Storage {
     private final SqlHelper sqlHelper;
@@ -163,18 +169,6 @@ public class SqlStorage implements Storage {
             for (Map.Entry<SectionType, AbstractSection> e : resume.getSections().entrySet()) {
                 ps.setString(1, resume.getUuid());
                 ps.setString(2, e.getKey().name());
-//                switch (e.getKey().name()) {
-//                    case ("OBJECTIVE"):
-//                    case ("PERSONAL"):
-//                        ps.setString(3, e.getValue().toString());
-//                        break;
-//                    case ("ACHIEVEMENT"):
-//                    case ("QUALIFICATIONS"):
-//                        AbstractSection abstractSection = e.getValue();
-//                        List<String> list = ((MarkSection) abstractSection).getMarkList();
-//                        ps.setString(3, String.join("\n", list));
-//                        break;
-//                }
                 AbstractSection section = e.getValue();
                 ps.setString(3, JsonParser.writer(section, AbstractSection.class));
                 ps.addBatch();
@@ -192,20 +186,9 @@ public class SqlStorage implements Storage {
 
     private void addSection(ResultSet rs, Resume resume) throws SQLException {
         String value = rs.getString("value");
-//        if (value != null) {
-//            AbstractSection section = null;
-//            switch (rs.getString("type")) {
-//                case ("OBJECTIVE"):
-//                case ("PERSONAL"):
-//                    section = new TextSection(value);
-//                    break;
-//                case ("ACHIEVEMENT"):
-//                case ("QUALIFICATIONS"):
-//                    List<String> list = Arrays.asList(value.split("\n"));
-//                    section = new MarkSection(list);
-//                    break;
-//            }
-//            resume.setSection(SectionType.valueOf(rs.getString("type")), section);
-        resume.setSection(SectionType.valueOf(rs.getString("type")), JsonParser.read(value, AbstractSection.class));
+        if (value != null) {
+            SectionType type = SectionType.valueOf(rs.getString("type"));
+            resume.setSection(type, JsonParser.read(value, AbstractSection.class));
+        }
     }
 }

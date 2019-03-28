@@ -3,6 +3,8 @@ package ru.javawebinar.basejava.web;
 import ru.javawebinar.basejava.Config;
 import ru.javawebinar.basejava.model.*;
 import ru.javawebinar.basejava.storage.Storage;
+import ru.javawebinar.basejava.util.DateUtil;
+import ru.javawebinar.basejava.util.HtmlUtil;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -26,26 +28,28 @@ public class ResumeServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         String uuid = request.getParameter("uuid");
         String fullName = request.getParameter("fullName");
-        final boolean isExist = (uuid == null || uuid.length() == 0);
         Resume resume;
-        if (isExist) {
+        if (uuid == null || uuid.length() == 0) {
             resume = new Resume(fullName);
-        } else {
-            resume = storage.get(uuid);
-            resume.setFullName(fullName);
+            storage.save(resume);
+            uuid = resume.getUuid();
         }
+        resume = storage.get(uuid);
+        resume.setFullName(fullName);
         for (ContactType type : ContactType.values()) {
             String value = request.getParameter(type.name());
-            if (value != null && value.trim().length() != 0) {
-                resume.setContact(type, value);
-            } else {
+            if (HtmlUtil.isEmpty(value)) {
                 resume.getContacts().remove(type);
+            } else {
+                resume.setContact(type, value);
             }
         }
         for (SectionType type : SectionType.values()) {
             String value = request.getParameter(type.name());
             String[] values = request.getParameterValues(type.name());
-            if (value != null && value.trim().length() != 0) {
+            if (HtmlUtil.isEmpty(value)) {
+                resume.getSections().remove(type);
+            } else {
                 switch (type) {
                     case OBJECTIVE:
                     case PERSONAL:
@@ -53,24 +57,35 @@ public class ResumeServlet extends HttpServlet {
                         break;
                     case ACHIEVEMENT:
                     case QUALIFICATIONS:
-                        resume.setSection(type, new MarkSection(value.trim().split("\n")));
+                        resume.setSection(type, new MarkSection(value.split("\\n")));
                         break;
-                    case EXPERIENCE:
                     case EDUCATION:
-                        List<Organization> list = new ArrayList<>();
-
-
+                    case EXPERIENCE:
+                        List<Organization> organizations = new ArrayList<>();
+                        String[] urls = request.getParameterValues(type.name() + "url");
+                        for (int i = 0; i < values.length; i++) {
+                            String name = values[i];
+                            if (!HtmlUtil.isEmpty(name)) {
+                                List<Organization.Content> positions = new ArrayList<>();
+                                String pfx = type.name() + i;
+                                String[] startDates = request.getParameterValues(pfx + "periodStart");
+                                String[] endDates = request.getParameterValues(pfx + "periodEnd");
+                                String[] titles = request.getParameterValues(pfx + "position");
+                                String[] descriptions = request.getParameterValues(pfx + "description");
+                                for (int j = 0; j < titles.length; j++) {
+                                    if (!HtmlUtil.isEmpty(titles[j])) {
+                                        positions.add(new Organization.Content(DateUtil.parse(startDates[j]), DateUtil.parse(endDates[j]), titles[j], descriptions[j]));
+                                    }
+                                }
+                                organizations.add(new Organization(new Link(name, urls[i]), positions));
+                            }
+                        }
+                        resume.setSection(type, new OrganizationSection(organizations));
                         break;
                 }
-            } else {
-                resume.getSections().remove(type);
             }
         }
-        if (isExist) {
-            storage.save(resume);
-        } else {
-            storage.update(resume);
-        }
+        storage.update(resume);
         response.sendRedirect("resume");
     }
 
