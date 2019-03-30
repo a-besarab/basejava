@@ -65,6 +65,12 @@
                     </dl>
                 </c:when>
                 <c:when test="${type == 'EXPERIENCE' || type == 'EDUCATION'}">
+                    <c:if test="${type == 'EXPERIENCE'}">
+                        <h3>Опыт работы</h3>
+                    </c:if>
+                    <c:if test="${type == 'EDUCATION'}">
+                        <h3>Образование</h3>
+                    </c:if>
                     <c:forEach var="org" items="<%=((OrganizationSection)section).getOrganization()%>"
                                varStatus="counter">
                         <dl>
